@@ -1,8 +1,8 @@
 package com.example.demo.entity;
 
-import com.example.demo.base.BaseEntity;
+import com.example.demo.base.GeneralEntity;
 
-public class User extends BaseEntity {
+public class User extends GeneralEntity {
 
     private String fullName;
     private String gender;

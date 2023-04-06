@@ -1,10 +1,10 @@
 package com.example.demo.base;
 
-public class BaseEntity {
+public class GeneralEntity {
 
     private String documentId;
 
-    public BaseEntity() {
+    public GeneralEntity() {
         // Default constructor required by Firestore
     }
 

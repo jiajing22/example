@@ -1,21 +1,14 @@
 package com.example.demo.service;
 
-import com.example.demo.base.BaseCrudService;
+import com.example.demo.base.GeneralService;
 import com.example.demo.entity.User;
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
-import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Service
-public class UserService extends BaseCrudService {
+public class UserService extends GeneralService {
 
     private static final String COLLECTION_NAME = "users";
 

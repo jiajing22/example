@@ -1,6 +1,5 @@
 package com.example.demo.base;
 
-import com.example.demo.entity.User;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
@@ -13,9 +12,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class BaseCrudService {
+public class GeneralService {
 
-    public String firestoreCreate(BaseEntity object, String collection) throws ExecutionException, InterruptedException {
+    public String firestoreCreate(GeneralEntity object, String collection) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(collection).document(object.getDocumentId()).set(object);
 
@@ -39,10 +38,11 @@ public class BaseCrudService {
         }
     }
 
-    public String firestoreUpdate(BaseEntity object, String collection) throws ExecutionException, InterruptedException {
+    public String firestoreUpdate(GeneralEntity object, String collection) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(collection).document(object.getDocumentId()).set(object);
 
+        //Need to find the document ID first
         return collectionApiFuture.get().getUpdateTime().toString();
     }
 
