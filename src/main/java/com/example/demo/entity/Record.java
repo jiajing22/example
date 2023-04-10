@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
-public class Record {
+import com.example.demo.base.GeneralEntity;
+
+public class Record extends GeneralEntity {
     private String recordId;
     private double weight;
     private double hbLevel;

@@ -1,8 +1,11 @@
 package com.example.demo.entity;
 
+import com.example.demo.base.GeneralEntity;
+import com.example.demo.base.GeneralService;
+
 import java.util.Date;
 
-public class DonationHistory {
+public class DonationHistory extends GeneralEntity {
     private String historyId;
     private String bloodSerialNo;
     private Date donateDate;

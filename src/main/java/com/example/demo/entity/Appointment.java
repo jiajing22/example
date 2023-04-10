@@ -1,8 +1,9 @@
 package com.example.demo.entity;
 
+import com.example.demo.base.GeneralEntity;
 import com.google.cloud.Timestamp;
 
-public class Appointment {
+public class Appointment extends GeneralEntity {
     private String appointmentId;
     private Timestamp appmntDate;
     private Timestamp timeslot;

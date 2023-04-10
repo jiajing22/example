@@ -4,9 +4,12 @@ import com.example.demo.base.GeneralEntity;
 
 public class User extends GeneralEntity {
 
+//    private String userId;
     private String fullName;
     private String gender;
     private String userType;
+//    private String password;
+//    private String email;
 
     public String getFullName() {
         return fullName;

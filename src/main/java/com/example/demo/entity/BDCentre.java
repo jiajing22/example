@@ -1,10 +1,12 @@
 package com.example.demo.entity;
 
-public class BDCentre {
+import com.example.demo.base.GeneralEntity;
+
+public class BDCentre extends GeneralEntity {
     private String centreId;
-    private String centerName;
-    private String centerState;
-    private String centerPhone;
+    private String centreName;
+    private String centreState;
+    private String centrePhone;
     private String cAddress;
 
     public String getCentreId() {
@@ -15,28 +17,28 @@ public class BDCentre {
         this.centreId = centreId;
     }
 
-    public String getCenterName() {
-        return centerName;
+    public String getCentreName() {
+        return centreName;
     }
 
-    public void setCenterName(String centerName) {
-        this.centerName = centerName;
+    public void setCentreName(String centreName) {
+        this.centreName = centreName;
     }
 
-    public String getCenterState() {
-        return centerState;
+    public String getCentreState() {
+        return centreState;
     }
 
-    public void setCenterState(String centerState) {
-        this.centerState = centerState;
+    public void setCentreState(String centreState) {
+        this.centreState = centreState;
     }
 
-    public String getCenterPhone() {
-        return centerPhone;
+    public String getCentrePhone() {
+        return centrePhone;
     }
 
-    public void setCenterPhone(String centerPhone) {
-        this.centerPhone = centerPhone;
+    public void setCentrePhone(String centrePhone) {
+        this.centrePhone = centrePhone;
     }
 
     public String getcAddress() {

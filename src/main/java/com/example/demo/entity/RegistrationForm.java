@@ -1,8 +1,10 @@
 package com.example.demo.entity;
 
+import com.example.demo.base.GeneralEntity;
+
 import java.util.Date;
 
-public class RegistrationForm {
+public class RegistrationForm extends GeneralEntity {
     private String regFormId;
     private String formStatus;
     private Date submitTime;

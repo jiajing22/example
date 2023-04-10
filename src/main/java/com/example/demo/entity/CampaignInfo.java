@@ -1,8 +1,9 @@
 package com.example.demo.entity;
 
+import com.example.demo.base.GeneralEntity;
 import com.google.cloud.Timestamp;
 
-public class CampaignInfo {
+public class CampaignInfo extends GeneralEntity {
     private String campaignId;
     private Timestamp postTime;
     private String description;

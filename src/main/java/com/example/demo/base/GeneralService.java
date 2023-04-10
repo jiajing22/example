@@ -1,10 +1,7 @@
 package com.example.demo.base;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 
 import java.util.ArrayList;
@@ -16,8 +13,15 @@ public class GeneralService {
 
     public String firestoreCreate(GeneralEntity object, String collection) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(collection).document(object.getDocumentId()).set(object);
 
+        DocumentReference docRef = dbFirestore.collection(collection).document(object.getDocumentId());
+        ApiFuture<DocumentSnapshot> docSnapshotFuture = docRef.get();
+        DocumentSnapshot docSnapshot = docSnapshotFuture.get();
+        if (docSnapshot.exists()) {
+            return "Document with ID " + object.getDocumentId() + " already exists in collection " + collection;
+        }
+
+        ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(collection).document(object.getDocumentId()).set(object);
         return collectionApiFuture.get().getUpdateTime().toString();
     }
 
@@ -69,6 +73,34 @@ public class GeneralService {
             object = document.toObject(c);
             objectList.add(object);
         }
+        return objectList;
+    }
+
+    public <T> List<T> firestoreGetAll (Class<T> c, String collection, String prefix) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        Iterable<DocumentReference> documentReference = dbFirestore.collection(collection).listDocuments();
+        Iterator<DocumentReference> iterator = documentReference.iterator();
+
+        Query query = dbFirestore.collection(collection).whereGreaterThanOrEqualTo(FieldPath.documentId(), prefix)
+                .whereLessThan(FieldPath.documentId(), prefix + Character.MAX_VALUE);
+
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+        List<T> objectList = new ArrayList<>();
+        T object = null;
+
+        for (QueryDocumentSnapshot document : querySnapshot.get().getDocuments()) {
+            object = document.toObject(c);
+            objectList.add(object);
+        }
+
+//        while(iterator.hasNext()){
+//            DocumentReference documentRef = iterator.next();
+//            ApiFuture<DocumentSnapshot> future = documentRef.get();
+//            DocumentSnapshot document = future.get();
+//
+//            object = document.toObject(c);
+//            objectList.add(object);
+//        }
         return objectList;
     }
 }
