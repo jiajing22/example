@@ -2,20 +2,25 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Donor;
 import com.example.demo.entity.Staff;
+import com.example.demo.entity.User;
 import com.example.demo.service.DonorService;
 import com.example.demo.service.StaffService;
+import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200/")
 @RequestMapping("/eDonor")
 public class UserController {
 
-//    @Autowired
-//    private UserService userService;
+    @Autowired
+    private UserService userService;
 //
 //    @PostMapping("/users")
 //    public String saveUser(@RequestBody User user) throws ExecutionException, InterruptedException {
@@ -34,10 +39,10 @@ public class UserController {
 //        return userService.deleteUser(userId);
 //    }
 //
-//    @GetMapping("/users")
-//    public List<User> getAllUser() throws ExecutionException, InterruptedException {
-//        return userService.getAllUser();
-//    }
+    @GetMapping("/users")
+    public List<User> getAllUser() throws ExecutionException, InterruptedException {
+        return userService.getAllUser();
+    }
 
     @Autowired
     private StaffService staffService;
@@ -69,6 +74,8 @@ public class UserController {
 
     @PostMapping("/donor")
     public String addDonor(@RequestBody Donor donor) throws ExecutionException, InterruptedException {
+        System.out.println("Controller");
+        System.out.println(donor);
         return donorService.addDonor(donor);
     }
     @GetMapping("/donor/{documentId}")
@@ -87,5 +94,15 @@ public class UserController {
     @GetMapping("/donor")
     public List<Donor> getAllDonor() throws ExecutionException, InterruptedException {
         return donorService.getAllDonor();
+    }
+
+    @GetMapping("/users/{userId}")
+    public String getUserIdByUsername(@PathVariable String userId) throws ExecutionException, InterruptedException {
+        return userService.getUserIdByUsername(userId);
+    }
+
+    @RequestMapping(value = "/user-login/", method = RequestMethod.POST)
+    public String getUserId(@RequestBody User user)throws Exception {
+        return userService.validateUserLogin(user.getUserId(), user.getPassword());
     }
 }

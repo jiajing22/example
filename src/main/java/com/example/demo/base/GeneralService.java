@@ -37,9 +37,32 @@ public class GeneralService {
             item = document.toObject(c);
             return item;
         } else {
-            System.out.println("Item not found");
             return null;
         }
+    }
+
+    public String firestoreGetIdByUsername (String username, String collection) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        CollectionReference collectionRef = dbFirestore.collection(collection);
+        Query query = collectionRef.whereEqualTo("userId", username).limit(1);
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+        List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
+        if (documents.size() > 0) {
+            return documents.get(0).getId();
+        } else {
+            return null;
+        }
+    }
+
+    public String firestoreGetIdByCredentials(String username, String password, String collection) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        CollectionReference collectionReference = dbFirestore.collection(collection);
+        Query query = collectionReference.whereEqualTo("userId", username).whereEqualTo("password", password);
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+            return document.getId();
+        }
+        return null;
     }
 
     public String firestoreUpdate(GeneralEntity object, String collection) throws ExecutionException, InterruptedException {

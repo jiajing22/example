@@ -6,7 +6,6 @@ public class Donor extends User{
     private String donorType;
     private String bloodType;
     private String address;
-    private String userId;
 
     public String getDonorId() {
         return donorId;
@@ -38,5 +37,16 @@ public class Donor extends User{
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public String toString() {
+        return "Donor{" +
+                super.toString()+
+                "donorId='" + donorId + '\'' +
+                ", donorType='" + donorType + '\'' +
+                ", bloodType='" + bloodType + '\'' +
+                ", address='" + address + '\'' +
+                '}';
     }
 }

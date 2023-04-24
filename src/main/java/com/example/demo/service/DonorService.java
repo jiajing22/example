@@ -13,9 +13,12 @@ public class DonorService extends GeneralService {
 
     public String addDonor (Donor donor) throws ExecutionException, InterruptedException {
         donor.setDocumentId(donor.getDocumentId());
+        System.out.println("Inside");
+        System.out.println(donor);
         return firestoreCreate(donor, COLLECTION_NAME);
     }
 
+    //Get By id
     public Donor getDonor(String donorId) throws ExecutionException, InterruptedException {
         return (Donor)firestoreGet(donorId, COLLECTION_NAME, Donor.class);
     }
