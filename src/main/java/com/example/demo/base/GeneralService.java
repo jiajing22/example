@@ -30,7 +30,6 @@ public class GeneralService {
         DocumentReference documentReference = dbFirestore.collection(collection).document(id);
         ApiFuture<DocumentSnapshot> future = documentReference.get();
         DocumentSnapshot document = future.get();
-        System.out.println(c.getName());
 
         Object item;
         if (document.exists()) {
@@ -40,6 +39,25 @@ public class GeneralService {
             return null;
         }
     }
+
+    public Object firestoreGet(String id, String collection, Class<?> c, String prefix) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        CollectionReference collectionRef = dbFirestore.collection(collection);
+        Query query = collectionRef.whereGreaterThanOrEqualTo(FieldPath.documentId(), prefix)
+                    .whereLessThan(FieldPath.documentId(), prefix + Character.MAX_VALUE)
+                    .whereEqualTo("documentId", id).limit(1);
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+        List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
+
+        if (documents.size() > 0) {
+            DocumentSnapshot document = documents.get(0);
+            Object item = document.toObject(c);
+            return item;
+        } else {
+            return null;
+        }
+    }
+
 
     public String firestoreGetIdByUsername (String username, String collection) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();

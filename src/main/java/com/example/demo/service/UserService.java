@@ -2,7 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.base.GeneralService;
 import com.example.demo.entity.Donor;
+import com.example.demo.entity.Staff;
 import com.example.demo.entity.User;
+import com.example.demo.util.SHA256;
 import com.google.cloud.Timestamp;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +39,8 @@ public class UserService extends GeneralService {
         return firestoreGetAll(User.class, COLLECTION_NAME);
     }
 
-    public User getById(String donorId) throws ExecutionException, InterruptedException {
-        return (Donor)firestoreGet(donorId, COLLECTION_NAME, Donor.class);
+    public User getById(String userId) throws ExecutionException, InterruptedException {
+        return (User)firestoreGet(userId, COLLECTION_NAME, User.class);
     }
 
     public String getUserIdByUsername(String username) throws ExecutionException, InterruptedException {
@@ -111,23 +113,23 @@ public class UserService extends GeneralService {
             id = getUserIdByUsername(userUserName);
 
             if (id != null && !id.isEmpty()) {
-                System.out.println("result: "+ id);
                 User user = getById(id);
-                id = getUserIdByCredentials(userUserName, userPw);
-
+                String hashPassword = SHA256.hash(userPw);
+                System.out.println("Hashed" + hashPassword);
+                id = getUserIdByCredentials(userUserName, hashPassword);
                 String userType = user.getUserType();
-                System.out.println("usertype: "+ userType);
 
                 if (id != null && !id.isEmpty()) {
-                    user.setUserLastLoginDate(Timestamp.now());
+
                     if( userType.equals("donor")){
-                        Donor updateDonorLogin = new Donor();
-                        // TODO : update the user with the existing data
+                        Donor updateDonorLogin = (Donor)firestoreGet(id, COLLECTION_NAME, Donor.class);
                         updateDonorLogin.setUserLastLoginDate(Timestamp.now());
-                        updateDonorLogin.setDocumentId(id);
-                        System.out.println(updateDonorLogin.toString());
-                        String status = firestoreUpdate(updateDonorLogin, COLLECTION_NAME);
-                        System.out.println(status);
+                        String updateLoginD = firestoreUpdate(updateDonorLogin, COLLECTION_NAME);
+
+                    } else if (userType.equals("staff")) {
+                        Staff updateStaffLogin = (Staff)firestoreGet(id, COLLECTION_NAME, Staff.class);
+                        updateStaffLogin.setUserLastLoginDate(Timestamp.now());
+                        String updateLoginS = firestoreUpdate(updateStaffLogin, COLLECTION_NAME);
                     }
                     return id;
                 } else {

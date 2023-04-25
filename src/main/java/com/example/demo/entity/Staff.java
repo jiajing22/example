@@ -8,7 +8,7 @@ public class Staff extends User{
     private String staffPosition;
     private String deptName;
     private String deptArea;
-    private String userId; //FK
+//    private String userId; //FK
 
     public String getStaffId() {
         return staffId;
@@ -42,11 +42,11 @@ public class Staff extends User{
         this.deptArea = deptArea;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+//    public String getUserId() {
+//        return userId;
+//    }
+//
+//    public void setUserId(String userId) {
+//        this.userId = userId;
+//    }
 }

@@ -52,8 +52,12 @@ public class UserController {
         return staffService.addStaff(staff);
     }
     @GetMapping("/staff/{documentId}")
-    public Staff getStaff(@PathVariable String documentId) throws ExecutionException, InterruptedException {
-        return staffService.getStaff(documentId);
+    public ResponseEntity<Staff> getStaff(@PathVariable String documentId) throws ExecutionException, InterruptedException {
+        Staff staff = staffService.getStaff(documentId);
+        if(staff == null){
+            return new ResponseEntity<Staff>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<Staff>(staff, HttpStatus.OK);
     }
     @PutMapping("/staff")
     public String updateStaff(@RequestBody Staff staff) throws ExecutionException, InterruptedException {
@@ -69,6 +73,12 @@ public class UserController {
         return staffService.getAllStaff();
     }
 
+    @RequestMapping(value = "/staff-login/", method = RequestMethod.POST)
+    public ResponseEntity<String> getStaffId(@RequestBody User user)throws Exception {
+        String staffId = staffService.validateStaffLogin(user.getUserId(), user.getPassword());
+        return new ResponseEntity<String>(staffId, HttpStatus.OK);
+    }
+
     @Autowired
     private DonorService donorService;
 
@@ -79,8 +89,12 @@ public class UserController {
         return donorService.addDonor(donor);
     }
     @GetMapping("/donor/{documentId}")
-    public Donor getDonor(@PathVariable String documentId) throws ExecutionException, InterruptedException {
-        return donorService.getDonor(documentId);
+    public ResponseEntity<Donor> getDonor(@PathVariable String documentId) throws ExecutionException, InterruptedException {
+        Donor donor = donorService.getDonor(documentId, "D");
+        if(donor == null){
+            return new ResponseEntity<Donor>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<Donor>(donor, HttpStatus.OK);
     }
     @PutMapping("/donor")
     public String updateDonor(@RequestBody Donor donor) throws ExecutionException, InterruptedException {
@@ -101,8 +115,16 @@ public class UserController {
         return userService.getUserIdByUsername(userId);
     }
 
-    @RequestMapping(value = "/user-login/", method = RequestMethod.POST)
-    public String getUserId(@RequestBody User user)throws Exception {
-        return userService.validateUserLogin(user.getUserId(), user.getPassword());
+    @RequestMapping(value = "/donor/login", method = RequestMethod.POST)
+    public ResponseEntity<Donor> getDonorId(@RequestBody User user)throws Exception {
+        System.out.println(user.getUserId());
+        System.out.println(user.getPassword());
+        Donor donorId = donorService.validateDonorLogin(user.getUserId(), user.getPassword());
+        if(donorId == null){
+            // TODO: improved error message
+//            return new ResponseEntity<Donor>(HttpStatus.NOT_FOUND);
+            throw new Exception("Incorrect username or password");
+        }
+        return new ResponseEntity<Donor>(donorId, HttpStatus.OK);
     }
 }
