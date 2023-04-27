@@ -73,10 +73,13 @@ public class UserController {
         return staffService.getAllStaff();
     }
 
-    @RequestMapping(value = "/staff-login/", method = RequestMethod.POST)
-    public ResponseEntity<String> getStaffId(@RequestBody User user)throws Exception {
-        String staffId = staffService.validateStaffLogin(user.getUserId(), user.getPassword());
-        return new ResponseEntity<String>(staffId, HttpStatus.OK);
+    @RequestMapping(value = "/staff/login", method = RequestMethod.POST)
+    public ResponseEntity<?> getStaffId(@RequestBody User user)throws Exception {
+        Staff staffId = staffService.validateStaffLogin(user.getUserId(), user.getPassword());
+        if (staffId == null){
+            return new ResponseEntity<>("Invalid username or password",HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(staffId, HttpStatus.OK);
     }
 
     @Autowired
@@ -116,15 +119,11 @@ public class UserController {
     }
 
     @RequestMapping(value = "/donor/login", method = RequestMethod.POST)
-    public ResponseEntity<Donor> getDonorId(@RequestBody User user)throws Exception {
-        System.out.println(user.getUserId());
-        System.out.println(user.getPassword());
+    public ResponseEntity<?> getDonorId(@RequestBody User user)throws Exception {
         Donor donorId = donorService.validateDonorLogin(user.getUserId(), user.getPassword());
         if(donorId == null){
-            // TODO: improved error message
-//            return new ResponseEntity<Donor>(HttpStatus.NOT_FOUND);
-            throw new Exception("Incorrect username or password");
+            return new ResponseEntity<>("Invalid username or password",HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<Donor>(donorId, HttpStatus.OK);
+        return new ResponseEntity<>(donorId, HttpStatus.OK);
     }
 }

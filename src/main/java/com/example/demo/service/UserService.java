@@ -47,11 +47,6 @@ public class UserService extends GeneralService {
         return firestoreGetIdByUsername(username, COLLECTION_NAME);
     }
 
-    public String getUserIdByCredentials(String username, String password) throws ExecutionException, InterruptedException {
-        return firestoreGetIdByCredentials(username, password, COLLECTION_NAME);
-    }
-
-
 //    public String validateUserLogin(String userUserName, String userPw) throws Exception {
 //
 //        //1. Search id by username
@@ -106,40 +101,40 @@ public class UserService extends GeneralService {
 //
 //    }
 
-    public String validateUserLogin(String userUserName, String userPw) {
-        String id = null;
-
-        try {
-            id = getUserIdByUsername(userUserName);
-
-            if (id != null && !id.isEmpty()) {
-                User user = getById(id);
-                String hashPassword = SHA256.hash(userPw);
-                System.out.println("Hashed" + hashPassword);
-                id = getUserIdByCredentials(userUserName, hashPassword);
-                String userType = user.getUserType();
-
-                if (id != null && !id.isEmpty()) {
-
-                    if( userType.equals("donor")){
-                        Donor updateDonorLogin = (Donor)firestoreGet(id, COLLECTION_NAME, Donor.class);
-                        updateDonorLogin.setUserLastLoginDate(Timestamp.now());
-                        String updateLoginD = firestoreUpdate(updateDonorLogin, COLLECTION_NAME);
-
-                    } else if (userType.equals("staff")) {
-                        Staff updateStaffLogin = (Staff)firestoreGet(id, COLLECTION_NAME, Staff.class);
-                        updateStaffLogin.setUserLastLoginDate(Timestamp.now());
-                        String updateLoginS = firestoreUpdate(updateStaffLogin, COLLECTION_NAME);
-                    }
-                    return id;
-                } else {
-                    return "Incorrect username or password.";
-                }
-            } else {
-                return "Incorrect username or password.";
-            }
-        } catch (Exception e) {
-            return "An error occurred while validating user login: " + e.getMessage();
-        }
-    }
+//    public String validateUserLogin(String userUserName, String userPw) {
+//        String id = null;
+//
+//        try {
+//            id = getUserIdByUsername(userUserName);
+//
+//            if (id != null && !id.isEmpty()) {
+//                User user = getById(id);
+//                String hashPassword = SHA256.hash(userPw);
+//                System.out.println("Hashed" + hashPassword);
+//                id = getUserIdByCredentials(userUserName, hashPassword);
+//                String userType = user.getUserType();
+//
+//                if (id != null && !id.isEmpty()) {
+//
+//                    if( userType.equals("donor")){
+//                        Donor updateDonorLogin = (Donor)firestoreGet(id, COLLECTION_NAME, Donor.class);
+//                        updateDonorLogin.setUserLastLoginDate(Timestamp.now());
+//                        String updateLoginD = firestoreUpdate(updateDonorLogin, COLLECTION_NAME);
+//
+//                    } else if (userType.equals("staff")) {
+//                        Staff updateStaffLogin = (Staff)firestoreGet(id, COLLECTION_NAME, Staff.class);
+//                        updateStaffLogin.setUserLastLoginDate(Timestamp.now());
+//                        String updateLoginS = firestoreUpdate(updateStaffLogin, COLLECTION_NAME);
+//                    }
+//                    return id;
+//                } else {
+//                    return "Incorrect username or password.";
+//                }
+//            } else {
+//                return "Incorrect username or password.";
+//            }
+//        } catch (Exception e) {
+//            return "An error occurred while validating user login: " + e.getMessage();
+//        }
+//    }
 }

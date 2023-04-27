@@ -49,7 +49,7 @@ public class DonorService extends GeneralService {
     }
 
     public String getUserIdByCredentials(String username, String password) throws ExecutionException, InterruptedException {
-        return firestoreGetIdByCredentials(username, password, COLLECTION_NAME);
+        return firestoreGetIdByCredentials(username, password, "D", COLLECTION_NAME);
     }
 
     public Donor validateDonorLogin(String userUserName, String userPw) throws Exception {

@@ -51,7 +51,7 @@ public class StaffService extends GeneralService {
     }
 
     public String getUserIdByCredentials(String username, String password) throws ExecutionException, InterruptedException {
-        return firestoreGetIdByCredentials(username, password, COLLECTION_NAME);
+        return firestoreGetIdByCredentials(username, password, "ST", COLLECTION_NAME);
     }
 
 //    public String validateStaffLogin(String userUserName, String userPw) {
@@ -82,16 +82,19 @@ public class StaffService extends GeneralService {
 //        }
 //    }
 
-    public String validateStaffLogin(String userName, String password) throws Exception {
+    public Staff validateStaffLogin(String userName, String password) throws Exception {
         System.out.println(SHA256.hash(password));
         String id = getUserIdByCredentials(userName, SHA256.hash(password));
+
         if (id != null && !id.isEmpty()) {
+            Staff staffWithIdOnly = new Staff();
+            staffWithIdOnly.setUserId(id);
             Staff updateStaffLogin = (Staff)firestoreGet(id, COLLECTION_NAME, Staff.class);
             updateStaffLogin.setUserLastLoginDate(Timestamp.now());
             String updateLoginS = firestoreUpdate(updateStaffLogin, COLLECTION_NAME);
-            return id;
+            return staffWithIdOnly;
         } else {
-            return "Incorrect username or password.";
+            return null;
         }
 
     }
