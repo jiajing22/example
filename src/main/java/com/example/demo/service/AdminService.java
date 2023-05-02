@@ -32,4 +32,24 @@ public class AdminService extends GeneralService {
     public List<Admin> getAllAdmin() throws ExecutionException, InterruptedException {
         return firestoreGetAll(Admin.class, COLLECTION_NAME, "A");
     }
+
+    public String getUserIdByCredentials(String username, String password) throws ExecutionException, InterruptedException {
+        return firestoreGetIdByCredentials(username, password, COLLECTION_NAME);
+    }
+
+//    public Admin validateAdminLogin(String userName, String password) throws Exception {
+//        String id = getUserIdByCredentials(userName, SHA256.hash(password));
+//
+//        if (id != null && !id.isEmpty()) {
+//            Staff staffWithIdOnly = new Staff();
+//            staffWithIdOnly.setUserId(id);
+//            Staff updateStaffLogin = (Staff)firestoreGet(id, COLLECTION_NAME, Staff.class);
+//            updateStaffLogin.setUserLastLoginDate(Timestamp.now());
+//            String updateLoginS = firestoreUpdate(updateStaffLogin, COLLECTION_NAME);
+//            return staffWithIdOnly;
+//        } else {
+//            return null;
+//        }
+//
+//    }
 }

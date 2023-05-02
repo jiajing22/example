@@ -38,6 +38,11 @@ public class UserController {
 //    public String deleteUser(@PathVariable String userId) throws ExecutionException, InterruptedException {
 //        return userService.deleteUser(userId);
 //    }
+
+//    @GetMapping("/users/{userId}")
+//    public String getUserIdByUsername(@PathVariable String userId) throws ExecutionException, InterruptedException {
+//        return userService.getUserIdByUsername(userId);
+//    }
 //
     @GetMapping("/users")
     public List<User> getAllUser() throws ExecutionException, InterruptedException {
@@ -82,6 +87,26 @@ public class UserController {
         return new ResponseEntity<>(staffId, HttpStatus.OK);
     }
 
+//    @GetMapping("/staff/search-donor")
+//    public ResponseEntity<List<Donor>> searchDonorById(@RequestParam(value="id") String id) throws Exception {
+//        List<Donor> donors = donorService.findDonorById(id);
+//        if (donors == null || donors.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//        return new ResponseEntity<>(donors, HttpStatus.OK);
+//    }
+
+    @GetMapping("/staff/search-donor")
+    public ResponseEntity<?> searchDonorById (@RequestParam(value="id") String id) throws Exception{
+        Donor donor = donorService.findDonorById(id);
+        if ( donor == null ){
+            return new ResponseEntity<>("Donor not found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(donor, HttpStatus.OK);
+    }
+
+//    --------------------------------------Donor----------------------------------------------------------------
+
     @Autowired
     private DonorService donorService;
 
@@ -111,11 +136,6 @@ public class UserController {
     @GetMapping("/donor")
     public List<Donor> getAllDonor() throws ExecutionException, InterruptedException {
         return donorService.getAllDonor();
-    }
-
-    @GetMapping("/users/{userId}")
-    public String getUserIdByUsername(@PathVariable String userId) throws ExecutionException, InterruptedException {
-        return userService.getUserIdByUsername(userId);
     }
 
     @RequestMapping(value = "/donor/login", method = RequestMethod.POST)

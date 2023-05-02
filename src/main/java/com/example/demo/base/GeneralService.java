@@ -58,6 +58,43 @@ public class GeneralService {
         }
     }
 
+    public Object firestoreGetByUserId(String id, String collection, Class<?> c, String prefix) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        CollectionReference collectionRef = dbFirestore.collection(collection);
+        Query query = collectionRef.whereGreaterThanOrEqualTo(FieldPath.documentId(), prefix)
+                .whereLessThan(FieldPath.documentId(), prefix + Character.MAX_VALUE)
+                .whereEqualTo("userId", id).limit(1);
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+        List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
+
+        if (documents.size() > 0) {
+            DocumentSnapshot document = documents.get(0);
+            Object item = document.toObject(c);
+            return item;
+        } else {
+            return null;
+        }
+    }
+
+//    public <T> List<T> firestoreGetByUserId(String id, String collection, Class<T> c, String prefix) throws ExecutionException, InterruptedException {
+//        Firestore dbFirestore = FirestoreClient.getFirestore();
+//        CollectionReference collectionRef = dbFirestore.collection(collection);
+//        Query query = collectionRef.whereGreaterThanOrEqualTo(FieldPath.documentId(), prefix)
+//                .whereLessThan(FieldPath.documentId(), prefix + Character.MAX_VALUE)
+//                .whereEqualTo("userId", id)
+//                .limit(1);
+//        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+//        List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
+//
+//        List<T> result = new ArrayList<>();
+//        for (QueryDocumentSnapshot document : documents) {
+//            T item = document.toObject(c);
+//            result.add(item);
+//        }
+//
+//        return result;
+//    }
+
 
     public String firestoreGetIdByUsername (String username, String collection) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
@@ -72,16 +109,16 @@ public class GeneralService {
         }
     }
 
-//    public String firestoreGetIdByCredentials(String username, String password, String collection) throws ExecutionException, InterruptedException {
-//        Firestore dbFirestore = FirestoreClient.getFirestore();
-//        CollectionReference collectionReference = dbFirestore.collection(collection);
-//        Query query = collectionReference.whereEqualTo("userId", username).whereEqualTo("password", password);
-//        ApiFuture<QuerySnapshot> querySnapshot = query.get();
-//        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
-//            return document.getId();
-//        }
-//        return null;
-//    }
+    public String firestoreGetIdByCredentials(String username, String password, String collection) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        CollectionReference collectionReference = dbFirestore.collection(collection);
+        Query query = collectionReference.whereEqualTo("userId", username).whereEqualTo("password", password);
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+            return document.getId();
+        }
+        return null;
+    }
 
     public String firestoreGetIdByCredentials(String username, String password, String prefix, String collection) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();

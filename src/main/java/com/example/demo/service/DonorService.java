@@ -2,12 +2,11 @@ package com.example.demo.service;
 
 import com.example.demo.base.GeneralService;
 import com.example.demo.entity.Donor;
-import com.example.demo.entity.Staff;
-import com.example.demo.entity.User;
 import com.example.demo.util.SHA256;
 import com.google.cloud.Timestamp;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -51,6 +50,37 @@ public class DonorService extends GeneralService {
     public String getUserIdByCredentials(String username, String password) throws ExecutionException, InterruptedException {
         return firestoreGetIdByCredentials(username, password, "D", COLLECTION_NAME);
     }
+
+    public Donor findDonorById(String userId) throws ExecutionException, InterruptedException {
+        Donor donorInfo = (Donor)firestoreGetByUserId(userId, COLLECTION_NAME, Donor.class, "D");
+        if(donorInfo == null){
+            return null;
+        }
+        Donor donorNeededInfo = new Donor();
+        donorNeededInfo.setUserId(donorInfo.getUserId());
+        donorNeededInfo.setFullName(donorInfo.getFullName());
+        donorNeededInfo.setBloodType(donorInfo.getBloodType());
+        System.out.println(donorNeededInfo);
+        return donorNeededInfo;
+    }
+
+//    public List<Donor> findDonorById(String userId) throws ExecutionException, InterruptedException {
+//        List<Donor> donors = firestoreGetByUserId(userId, COLLECTION_NAME, Donor.class, "D");
+//        if (donors == null || donors.isEmpty()) {
+//            return null;
+//        }
+//
+//        List<Donor> result = new ArrayList<>();
+//        for (Donor donorInfo : donors) {
+//            Donor donorNeededInfo = new Donor();
+//            donorNeededInfo.setUserId(donorInfo.getUserId());
+//            donorNeededInfo.setFullName(donorInfo.getFullName());
+//            donorNeededInfo.setBloodType(donorInfo.getBloodType());
+//            result.add(donorNeededInfo);
+//        }
+//        return result;
+//    }
+
 
     public Donor validateDonorLogin(String userUserName, String userPw) throws Exception {
         String id = null;
