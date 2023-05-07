@@ -12,10 +12,11 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class StaffService extends GeneralService {
 
-    private static final String COLLECTION_NAME = "users";
+    private static final String COLLECTION_NAME = "staff";
     private static final String USER_TYPE = "staff";
 
     public String addStaff (Staff staff) throws ExecutionException, InterruptedException {
+//        int id= getAllStaff().size()+1;
         staff.setDocumentId(staff.getDocumentId());
         staff.setUserType(USER_TYPE);
 //        staff.setUserType(USER_TYPE);
@@ -26,7 +27,7 @@ public class StaffService extends GeneralService {
     }
 
     public Staff getStaff(String documentId) throws ExecutionException, InterruptedException {
-        return (Staff)firestoreGet(documentId, COLLECTION_NAME, Staff.class, "ST");
+        return (Staff)firestoreGet(documentId, COLLECTION_NAME, Staff.class);
     }
 
     public String updateStaff (Staff staff) throws ExecutionException, InterruptedException {
@@ -51,7 +52,7 @@ public class StaffService extends GeneralService {
     }
 
     public String getUserIdByCredentials(String username, String password) throws ExecutionException, InterruptedException {
-        return firestoreGetIdByCredentials(username, password, "ST", COLLECTION_NAME);
+        return firestoreGetIdByCredentials(username, password, COLLECTION_NAME);
     }
 
 //    public String validateStaffLogin(String userUserName, String userPw) {

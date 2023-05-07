@@ -3,27 +3,30 @@ package com.example.demo.service;
 import com.example.demo.base.GeneralService;
 import com.example.demo.entity.Donor;
 import com.example.demo.util.SHA256;
+import com.example.demo.util.Util;
 import com.google.cloud.Timestamp;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Service
 public class DonorService extends GeneralService {
-    private static final String COLLECTION_NAME = "users";
+    private static final String COLLECTION_NAME = "donor";
+    private static final String USER_TYPE = "donor";
 
-    public String addDonor (Donor donor) throws ExecutionException, InterruptedException {
-        donor.setDocumentId(donor.getDocumentId());
-        System.out.println("Inside");
-        System.out.println(donor);
-        return firestoreCreate(donor, COLLECTION_NAME);
+    public String addDonor (Donor donor) throws Exception {
+        int id= getAllDonor().size()+1;
+        donor.setDocumentId(Util.generateId("Donor",id));
+        donor.setDonorId(Util.generateId("Donor",id));
+        donor.setPassword(SHA256.hash(donor.getPassword()));
+        donor.setUserType(USER_TYPE);
+        return firestoreAddNewUser(donor, COLLECTION_NAME, donor.getUserId());
     }
 
     //Get By id
-    public Donor getDonor(String donorId, String prefix) throws ExecutionException, InterruptedException {
-        return (Donor)firestoreGet(donorId, COLLECTION_NAME, Donor.class, prefix);
+    public Donor getDonor(String donorId) throws ExecutionException, InterruptedException {
+        return (Donor)firestoreGet(donorId, COLLECTION_NAME, Donor.class);
     }
 
     public String updateDonor (Donor donor) throws ExecutionException, InterruptedException {
@@ -36,7 +39,7 @@ public class DonorService extends GeneralService {
     }
 
     public List<Donor> getAllDonor() throws ExecutionException, InterruptedException {
-        return firestoreGetAll(Donor.class, COLLECTION_NAME, "D");
+        return firestoreGetAll(Donor.class, COLLECTION_NAME);
     }
 
     public Donor getById(String userId) throws ExecutionException, InterruptedException {
@@ -48,11 +51,11 @@ public class DonorService extends GeneralService {
     }
 
     public String getUserIdByCredentials(String username, String password) throws ExecutionException, InterruptedException {
-        return firestoreGetIdByCredentials(username, password, "D", COLLECTION_NAME);
+        return firestoreGetIdByCredentials(username, password, COLLECTION_NAME);
     }
 
     public Donor findDonorById(String userId) throws ExecutionException, InterruptedException {
-        Donor donorInfo = (Donor)firestoreGetByUserId(userId, COLLECTION_NAME, Donor.class, "D");
+        Donor donorInfo = (Donor)firestoreGetByUserId(userId, COLLECTION_NAME, Donor.class);
         if(donorInfo == null){
             return null;
         }

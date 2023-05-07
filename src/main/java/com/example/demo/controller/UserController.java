@@ -111,14 +111,19 @@ public class UserController {
     private DonorService donorService;
 
     @PostMapping("/donor")
-    public String addDonor(@RequestBody Donor donor) throws ExecutionException, InterruptedException {
-        System.out.println("Controller");
-        System.out.println(donor);
-        return donorService.addDonor(donor);
+    public ResponseEntity<String> addDonor(@RequestBody Donor donor) throws Exception {
+        String status = donorService.addDonor(donor);
+        if (status.equals("documentId")){
+            return new ResponseEntity<>("Existing document ID",HttpStatus.NOT_FOUND);
+        } else if(status.equals("userId")){
+            return new ResponseEntity<>("The IC Number is already been registered.",HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @GetMapping("/donor/{documentId}")
     public ResponseEntity<Donor> getDonor(@PathVariable String documentId) throws ExecutionException, InterruptedException {
-        Donor donor = donorService.getDonor(documentId, "D");
+        Donor donor = donorService.getDonor(documentId);
         if(donor == null){
             return new ResponseEntity<Donor>(HttpStatus.NOT_FOUND);
         }

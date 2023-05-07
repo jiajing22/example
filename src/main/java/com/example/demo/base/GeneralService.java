@@ -25,6 +25,27 @@ public class GeneralService {
         return collectionApiFuture.get().getUpdateTime().toString();
     }
 
+    public String firestoreAddNewUser(GeneralEntity object, String collection, String userId) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+
+        DocumentReference docRef = dbFirestore.collection(collection).document(object.getDocumentId());
+        ApiFuture<DocumentSnapshot> docSnapshotFuture = docRef.get();
+        DocumentSnapshot docSnapshot = docSnapshotFuture.get();
+        if (docSnapshot.exists()) {
+            return "documentId";
+        }
+
+        Query query = dbFirestore.collection(collection).whereEqualTo("userId", userId);
+        ApiFuture<QuerySnapshot> querySnapshotFuture = query.get();
+        QuerySnapshot querySnapshot = querySnapshotFuture.get();
+        if (!querySnapshot.isEmpty()) {
+            return "userId";
+        }
+
+        ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(collection).document(object.getDocumentId()).set(object);
+        return "Registration Success.";
+    }
+
     public Object firestoreGet (String id, String collection, Class<?> c) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         DocumentReference documentReference = dbFirestore.collection(collection).document(id);
@@ -58,12 +79,10 @@ public class GeneralService {
         }
     }
 
-    public Object firestoreGetByUserId(String id, String collection, Class<?> c, String prefix) throws ExecutionException, InterruptedException {
+    public Object firestoreGetByUserId(String id, String collection, Class<?> c) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         CollectionReference collectionRef = dbFirestore.collection(collection);
-        Query query = collectionRef.whereGreaterThanOrEqualTo(FieldPath.documentId(), prefix)
-                .whereLessThan(FieldPath.documentId(), prefix + Character.MAX_VALUE)
-                .whereEqualTo("userId", id).limit(1);
+        Query query = collectionRef.whereEqualTo("userId", id).limit(1);
         ApiFuture<QuerySnapshot> querySnapshot = query.get();
         List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
 
@@ -120,20 +139,20 @@ public class GeneralService {
         return null;
     }
 
-    public String firestoreGetIdByCredentials(String username, String password, String prefix, String collection) throws ExecutionException, InterruptedException {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        CollectionReference collectionReference = dbFirestore.collection(collection);
-        Query query = collectionReference.whereEqualTo("userId", username)
-                .whereEqualTo("password", password)
-                .whereGreaterThanOrEqualTo(FieldPath.documentId(), prefix)
-                .whereLessThan(FieldPath.documentId(), prefix + Character.MAX_VALUE);
-
-        ApiFuture<QuerySnapshot> querySnapshot = query.get();
-        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            return document.getId();
-        }
-        return null;
-    }
+//    public String firestoreGetIdByCredentials(String username, String password, String prefix, String collection) throws ExecutionException, InterruptedException {
+//        Firestore dbFirestore = FirestoreClient.getFirestore();
+//        CollectionReference collectionReference = dbFirestore.collection(collection);
+//        Query query = collectionReference.whereEqualTo("userId", username)
+//                .whereEqualTo("password", password)
+//                .whereGreaterThanOrEqualTo(FieldPath.documentId(), prefix)
+//                .whereLessThan(FieldPath.documentId(), prefix + Character.MAX_VALUE);
+//
+//        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+//        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+//            return document.getId();
+//        }
+//        return null;
+//    }
 
     public String firestoreUpdate(GeneralEntity object, String collection) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();

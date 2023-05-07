@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Admin;
+import com.example.demo.entity.User;
 import com.example.demo.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,5 +37,14 @@ public class AdminController {
     @GetMapping("/admin")
     public List<Admin> getAllStaff() throws ExecutionException, InterruptedException {
         return adminService.getAllAdmin();
+    }
+
+    @RequestMapping(value = "/admin/login", method = RequestMethod.POST)
+    public ResponseEntity<?> getStaffId(@RequestBody User user)throws Exception {
+        Admin adminId = adminService.validateAdminLogin(user.getUserId(), user.getPassword());
+        if (adminId == null){
+            return new ResponseEntity<>("Invalid username or password", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(adminId, HttpStatus.OK);
     }
 }

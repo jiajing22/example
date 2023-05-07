@@ -2,6 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.base.GeneralService;
 import com.example.demo.entity.Admin;
+import com.example.demo.entity.Staff;
+import com.example.demo.util.SHA256;
+import com.google.cloud.Timestamp;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,4 +55,22 @@ public class AdminService extends GeneralService {
 //        }
 //
 //    }
+
+    public Admin validateAdminLogin(String userName, String password) throws Exception {
+        System.out.println(SHA256.hash(password));
+        String id = getUserIdByCredentials(userName, SHA256.hash(password));
+        System.out.println(id);
+
+        if (id != null && !id.isEmpty()) {
+            Admin adminWithIdOnly = new Admin();
+            adminWithIdOnly.setUserId(id);
+            Admin updateAdminLogin = (Admin)firestoreGet(id, COLLECTION_NAME, Admin.class);
+            updateAdminLogin.setUserLastLoginDate(Timestamp.now());
+            String updateLoginS = firestoreUpdate(updateAdminLogin, COLLECTION_NAME);
+            return adminWithIdOnly;
+        } else {
+            return null;
+        }
+
+    }
 }

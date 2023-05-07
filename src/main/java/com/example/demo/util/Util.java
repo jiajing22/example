@@ -10,20 +10,17 @@ public class Util {
         String prefix = "";
         String suffix = "";
         switch(entityName) {
-            case "Author": prefix = "A"; break;
-            case "Book": prefix = "B"; break;
-            case "Category": prefix = "T"; break;
-            case "Contract": prefix = "C"; break;
-            case "Moderator": prefix = "M"; break;
-            case "Shelf": prefix = "S"; break;
-            case "Publisher": prefix = "P"; break;
-            case "User": prefix = "U"; break;
-            case "Cheque":prefix = "Q"; break;
-            case "Transaction":prefix = "R"; break;
-            case "AuditTrail":prefix = "Z"; break;
+            case "Admin": prefix = "A"; break;
+            case "Appointment": prefix = "AP"; break;
+            case "BDCentre": prefix = "BD"; break;
+            case "Campaign": prefix = "CA"; break;
+            case "Donor": prefix = "D"; break;
+            case "Record": prefix = "RC"; break;
+            case "Registration": prefix = "RF"; break;
+            case "Staff": prefix = "ST"; break;
         }
 
-        for(int i = 0; i < (4-String.valueOf(id).length()); i++)
+        for(int i = 0; i < (5-String.valueOf(id).length()); i++)
             suffix += "0";
 
         suffix += String.valueOf(id);
