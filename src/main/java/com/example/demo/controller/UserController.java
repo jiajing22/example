@@ -6,12 +6,22 @@ import com.example.demo.entity.User;
 import com.example.demo.service.DonorService;
 import com.example.demo.service.StaffService;
 import com.example.demo.service.UserService;
+import com.google.cloud.Timestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -110,6 +120,9 @@ public class UserController {
     @Autowired
     private DonorService donorService;
 
+    @Autowired
+    private JavaMailSender javaMailSender;
+
     @PostMapping("/donor")
     public ResponseEntity<String> addDonor(@RequestBody Donor donor) throws Exception {
         String status = donorService.addDonor(donor);
@@ -150,5 +163,47 @@ public class UserController {
             return new ResponseEntity<>("Invalid username or password",HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(donorId, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/forget-password", method = RequestMethod.POST)
+    public ResponseEntity<?> forgotPassword(@RequestBody User user) throws Exception {
+//        String email = (String) request.get("email");
+        String email = "imjiajing1222@gmail.com";
+        String token = donorService.forgetPw(user.getUserId(), user.getEmail());
+        if (token == null ){
+            return new ResponseEntity<>("Username not found",HttpStatus.NOT_FOUND);
+        }
+        String resetUrl = "http://localhost:8080/eDonor/reset-password?token=" + token;
+        sendEmail(email, resetUrl);
+        return ResponseEntity.ok("Password reset email sent successfully");
+    }
+
+    private void sendEmail(String to, String link) throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setFrom("edonor.noreply@gmail.com", "eDonor Support");
+        helper.setTo(to);
+
+        String subject = "Here's the link to reset your password";
+
+        String content = "<p>Hello,</p>"
+                + "<p>You have requested to reset your password.</p>"
+                + "<p>Click the link below to change your password:</p>"
+                + "<p><a href=\"" + link + "\">Change my password</a></p>"
+                + "<br>"
+                + "<p>Ignore this email if you do remember your password, "
+                + "or you have not made the request.</p>";
+
+        helper.setSubject(subject);
+        helper.setText(content, true);
+
+        javaMailSender.send(message);
+
+//        SimpleMailMessage message = new SimpleMailMessage();
+//        message.setTo(to);
+//        message.setSubject(subject);
+//        message.setText(text);
+//        javaMailSender.send(message);
     }
 }

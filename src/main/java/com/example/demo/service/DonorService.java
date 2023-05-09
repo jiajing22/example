@@ -2,12 +2,16 @@ package com.example.demo.service;
 
 import com.example.demo.base.GeneralService;
 import com.example.demo.entity.Donor;
+import com.example.demo.entity.PasswordResetToken;
 import com.example.demo.util.SHA256;
 import com.example.demo.util.Util;
 import com.google.cloud.Timestamp;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -54,6 +58,10 @@ public class DonorService extends GeneralService {
         return firestoreGetIdByCredentials(username, password, COLLECTION_NAME);
     }
 
+    public Boolean isUserExist(String username, String email) throws ExecutionException, InterruptedException {
+        return firestoreCheckUserEmail(username, email, COLLECTION_NAME);
+    }
+
     public Donor findDonorById(String userId) throws ExecutionException, InterruptedException {
         Donor donorInfo = (Donor)firestoreGetByUserId(userId, COLLECTION_NAME, Donor.class);
         if(donorInfo == null){
@@ -65,6 +73,31 @@ public class DonorService extends GeneralService {
         donorNeededInfo.setBloodType(donorInfo.getBloodType());
         System.out.println(donorNeededInfo);
         return donorNeededInfo;
+    }
+
+    public String forgetPw (String username, String email) throws ExecutionException, InterruptedException {
+        boolean check = isUserExist(username,email);
+        System.out.println("Check: "+ isUserExist(username,email));
+        if(check){
+            String token = UUID.randomUUID().toString();
+            PasswordResetToken resetToken = new PasswordResetToken();
+            resetToken.setDocumentId(token);
+            resetToken.setToken(token);
+            resetToken.setEmail(email);
+            resetToken.setCreated(Timestamp.now());
+            String status = firestoreCreate(resetToken,"passwordResetToken");
+            System.out.println(status);
+            return token;
+        } else {
+            return null;
+        }
+    }
+
+    public String matchToken (String token) throws ExecutionException, InterruptedException {
+        PasswordResetToken checkToken = new PasswordResetToken();
+        checkToken =  (PasswordResetToken) firestoreGet(token, "passwordResetToken", PasswordResetToken.class);
+        System.out.println(checkToken);
+        return checkToken.getEmail();
     }
 
 //    public List<Donor> findDonorById(String userId) throws ExecutionException, InterruptedException {

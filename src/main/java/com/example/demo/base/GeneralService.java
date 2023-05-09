@@ -139,6 +139,26 @@ public class GeneralService {
         return null;
     }
 
+    public Boolean firestoreCheckUserEmail(String username, String email, String collection) throws ExecutionException, InterruptedException {
+        Firestore firestore = FirestoreClient.getFirestore();
+        Query query = firestore.collection(collection)
+                .whereEqualTo("userId", username)
+                .whereEqualTo("email", email)
+                .limit(1);
+        ApiFuture<QuerySnapshot> future = query.get();
+        QuerySnapshot snapshot = future.get();
+
+        if (snapshot.isEmpty()) {
+            // No matching documents found
+            return false;
+        } else {
+            // At least one matching document found
+            DocumentReference docRef = snapshot.getDocuments().get(0).getReference();
+            String userId = docRef.getId();
+            return true;
+        }
+    }
+
 //    public String firestoreGetIdByCredentials(String username, String password, String prefix, String collection) throws ExecutionException, InterruptedException {
 //        Firestore dbFirestore = FirestoreClient.getFirestore();
 //        CollectionReference collectionReference = dbFirestore.collection(collection);

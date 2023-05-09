@@ -13,7 +13,16 @@ public class User extends GeneralEntity {
     private String gender;
     private String userType;
     private Timestamp userLastLoginDate;
-//    private String email;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    private String email;
 
     public String getUserId() {
         return userId;
