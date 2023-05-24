@@ -6,24 +6,30 @@ import java.io.Writer;
 import java.util.*;
 
 public class Util {
-    public static String generateId(String entityName, int id) {
+    public static String generateId(String entityName, String lastId) {
         String prefix = "";
         String suffix = "";
         switch(entityName) {
-            case "Admin": prefix = "A"; break;
+            case "Admin": prefix = "AD"; break;
             case "Appointment": prefix = "AP"; break;
             case "BDCentre": prefix = "BD"; break;
             case "Campaign": prefix = "CA"; break;
-            case "Donor": prefix = "D"; break;
+            case "Donor": prefix = "DN"; break;
+            case "History": prefix = "DH"; break;
             case "Record": prefix = "RC"; break;
             case "Registration": prefix = "RF"; break;
             case "Staff": prefix = "ST"; break;
         }
 
-        for(int i = 0; i < (5-String.valueOf(id).length()); i++)
-            suffix += "0";
+        int lastIdNumber = Integer.parseInt(lastId.replaceAll("\\D+", ""));
+        int nextIdNumber = lastIdNumber + 1;
 
-        suffix += String.valueOf(id);
+        suffix = String.format("%05d", nextIdNumber);
+
+//        for(int i = 0; i < (5-String.valueOf(id).length()); i++)
+//            suffix += "0";
+//
+//        suffix += String.valueOf(id);
 
         return prefix + suffix;
     }

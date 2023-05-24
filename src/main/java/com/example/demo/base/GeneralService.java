@@ -18,7 +18,7 @@ public class GeneralService {
         ApiFuture<DocumentSnapshot> docSnapshotFuture = docRef.get();
         DocumentSnapshot docSnapshot = docSnapshotFuture.get();
         if (docSnapshot.exists()) {
-            return "Document with ID " + object.getDocumentId() + " already exists in collection " + collection;
+            return null;
         }
 
         ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(collection).document(object.getDocumentId()).set(object);
@@ -234,5 +234,21 @@ public class GeneralService {
 //            objectList.add(object);
 //        }
         return objectList;
+    }
+
+    public String firestoreGetLastID(String collection) throws Exception {
+        Firestore firestore = FirestoreClient.getFirestore();
+        CollectionReference collectionRef = firestore.collection(collection);
+
+        Query query = collectionRef.orderBy("documentId", Query.Direction.DESCENDING).limit(1);
+        ApiFuture<QuerySnapshot> future = query.get();
+        QuerySnapshot snapshot = future.get();
+
+        if (!snapshot.isEmpty()) {
+            DocumentSnapshot lastDocument = snapshot.getDocuments().get(0);
+            return lastDocument.getId();
+        }
+
+        return null; // Collection is empty
     }
 }

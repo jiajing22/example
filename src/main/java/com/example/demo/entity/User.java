@@ -12,6 +12,7 @@ public class User extends GeneralEntity {
     private String fullName;
     private String gender;
     private String userType;
+    private String email;
     private Timestamp userLastLoginDate;
 
     public String getEmail() {
@@ -21,8 +22,6 @@ public class User extends GeneralEntity {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    private String email;
 
     public String getUserId() {
         return userId;

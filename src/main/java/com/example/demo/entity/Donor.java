@@ -6,7 +6,6 @@ public class Donor extends User{
     private String donorType;
     private String bloodType;
     private String address;
-    private String email;
     private String phone;
 
     public String getDonorId() {
@@ -41,14 +40,6 @@ public class Donor extends User{
         this.address = address;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getPhone() {
         return phone;
     }
@@ -65,7 +56,6 @@ public class Donor extends User{
                 ", donorType='" + donorType + '\'' +
                 ", bloodType='" + bloodType + '\'' +
                 ", address='" + address + '\'' +
-                ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 '}';
     }

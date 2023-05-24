@@ -15,10 +15,11 @@ public class DonationHistoryController {
     @Autowired
     private DonationHistoryService donationHistoryService;
 
-    @PostMapping("/history")
-    public String addHistory(@RequestBody DonationHistory history) throws ExecutionException, InterruptedException {
-        return donationHistoryService.addHistory(history);
-    }
+//    @PostMapping("/history")
+//    public String addHistory(@RequestBody DonationHistory history) throws Exception {
+//        return donationHistoryService.addHistory(history);
+//    }
+
     @GetMapping("/history/{documentId}")
     public DonationHistory getHistory(@PathVariable String documentId) throws ExecutionException, InterruptedException {
         return donationHistoryService.getHistory(documentId);

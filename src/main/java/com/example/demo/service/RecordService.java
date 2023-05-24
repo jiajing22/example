@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.base.GeneralService;
+import com.example.demo.entity.DonationHistory;
 import com.example.demo.entity.Record;
+import com.example.demo.util.Util;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,10 +12,38 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class RecordService extends GeneralService {
     private static final String COLLECTION_NAME = "record";
+    private static final String COLLECTION_NAME_HISTORY = "donationHistory";
 
-    public String addRecord (Record record) throws ExecutionException, InterruptedException {
-        record.setDocumentId(record.getDocumentId());
-        return firestoreCreate(record, COLLECTION_NAME);
+    private DonationHistoryService historyService;
+
+    public String addRecord (Record record) throws Exception {
+        String lastID = firestoreGetLastID(COLLECTION_NAME);
+        record.setDocumentId(Util.generateId("Record",lastID));
+        record.setRecordId(record.getDocumentId());
+        String status = firestoreCreate(record, COLLECTION_NAME);
+
+        DonationHistory history = new DonationHistory();
+        String lastHID = firestoreGetLastID(COLLECTION_NAME_HISTORY);
+        System.out.println(lastHID);
+        history.setDocumentId(Util.generateId("History",lastHID));
+        history.setHistoryId(history.getDocumentId());
+        history.setBloodSerialNo(record.getBloodSerialNo());
+        history.setDonateDate(record.getRegDate());
+        history.setAmount(record.getVolume());
+        history.setdHospital(record.getBloodCentre());
+        history.setDonorId(record.getDonorIc());
+        history.setRecordId(record.getRecordId());
+
+        if (record.getRecRemark() != null ){
+            history.setRecRemark(record.getRecRemark());
+        }
+
+        String insertHistory = firestoreCreate(history, COLLECTION_NAME_HISTORY);
+
+        if (insertHistory == null || status == null){
+            return null;
+        }
+        return record.getRecordId();
     }
 
     public Record getRecord(String documentId) throws ExecutionException, InterruptedException {

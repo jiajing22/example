@@ -5,6 +5,7 @@ import com.example.demo.entity.Donor;
 import com.example.demo.entity.PasswordResetToken;
 import com.example.demo.util.SHA256;
 import com.example.demo.util.Util;
+import com.example.demo.util.UtilException;
 import com.google.cloud.Timestamp;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +22,9 @@ public class DonorService extends GeneralService {
 
     public String addDonor (Donor donor) throws Exception {
         int id= getAllDonor().size()+1;
-        donor.setDocumentId(Util.generateId("Donor",id));
-        donor.setDonorId(Util.generateId("Donor",id));
+        String lastID = firestoreGetLastID(COLLECTION_NAME);
+        donor.setDocumentId(Util.generateId("Donor",lastID));
+        donor.setDonorId(Util.generateId("Donor",lastID));
         donor.setPassword(SHA256.hash(donor.getPassword()));
         donor.setUserType(USER_TYPE);
         return firestoreAddNewUser(donor, COLLECTION_NAME, donor.getUserId());
@@ -34,8 +36,16 @@ public class DonorService extends GeneralService {
     }
 
     public String updateDonor (Donor donor) throws ExecutionException, InterruptedException {
-        donor.setDocumentId(donor.getDocumentId());
-        return firestoreUpdate(donor, COLLECTION_NAME);
+        //1. Search current userId
+        Donor donorInfo = getDonor(donor.getDonorId());
+        if (donorInfo !=null ){
+            donorInfo.setEmail(donor.getEmail());
+            donorInfo.setPhone(donor.getPhone());
+            donorInfo.setAddress(donor.getAddress());
+            return firestoreUpdate(donorInfo, COLLECTION_NAME);
+        } else{
+            return null;
+        }
     }
 
     public String deleteDonor(String donorId) throws ExecutionException, InterruptedException {
@@ -46,9 +56,9 @@ public class DonorService extends GeneralService {
         return firestoreGetAll(Donor.class, COLLECTION_NAME);
     }
 
-    public Donor getById(String userId) throws ExecutionException, InterruptedException {
-        return (Donor)firestoreGet(userId, COLLECTION_NAME, Donor.class);
-    }
+//    public Donor getById(String userId) throws ExecutionException, InterruptedException {
+//        return (Donor)firestoreGet(userId, COLLECTION_NAME, Donor.class);
+//    }
 
     public String getUserIdByUsername(String username) throws ExecutionException, InterruptedException {
         return firestoreGetIdByUsername(username, COLLECTION_NAME);
@@ -73,6 +83,17 @@ public class DonorService extends GeneralService {
         donorNeededInfo.setBloodType(donorInfo.getBloodType());
         System.out.println(donorNeededInfo);
         return donorNeededInfo;
+    }
+
+    public String updatePw (String donorId, String password) throws ExecutionException, InterruptedException, UtilException {
+        Donor donorInfo = getDonor(donorId);
+        if (donorInfo !=null ){
+            String hashedPw = SHA256.hash(password);
+            donorInfo.setPassword(hashedPw);
+            return firestoreUpdate(donorInfo, COLLECTION_NAME);
+        } else{
+            return null;
+        }
     }
 
     public String forgetPw (String username, String email) throws ExecutionException, InterruptedException {

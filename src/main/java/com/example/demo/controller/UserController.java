@@ -142,10 +142,16 @@ public class UserController {
         }
         return new ResponseEntity<Donor>(donor, HttpStatus.OK);
     }
+
     @PutMapping("/donor")
-    public String updateDonor(@RequestBody Donor donor) throws ExecutionException, InterruptedException {
-        return donorService.updateDonor(donor);
+    public ResponseEntity<String> updateDonor(@RequestBody Donor donor) throws ExecutionException, InterruptedException {
+        String updateDonor = donorService.updateDonor(donor);
+        if(updateDonor == null){
+            return new ResponseEntity<String>("Donor not found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @DeleteMapping("/donor/{documentId}")
     public String deleteDonor(@PathVariable String documentId) throws ExecutionException, InterruptedException {
         return donorService.deleteDonor(documentId);
@@ -176,6 +182,15 @@ public class UserController {
         String resetUrl = "http://localhost:8080/eDonor/reset-password?token=" + token;
         sendEmail(email, resetUrl);
         return ResponseEntity.ok("Password reset email sent successfully");
+    }
+
+    @RequestMapping(value = "/update-password", method = RequestMethod.POST)
+    public ResponseEntity<?> updatePassword(@RequestBody Donor donor) throws Exception {
+        String status =  donorService.updatePw(donor.getDonorId(),donor.getPassword());
+        if (status == null ){
+            return new ResponseEntity<>("Password Update Failed",HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private void sendEmail(String to, String link) throws MessagingException, UnsupportedEncodingException {

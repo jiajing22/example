@@ -3,17 +3,39 @@ package com.example.demo.entity;
 import com.example.demo.base.GeneralEntity;
 import com.example.demo.base.GeneralService;
 
-import java.util.Date;
-
 public class DonationHistory extends GeneralEntity {
     private String historyId;
     private String bloodSerialNo;
-    private Date donateDate;
+    private String donateDate;
     private Integer amount;
     private String dHospital;
     private String recRemark;
-    private String donorId;
+    private String donorIc;
     private String recordId;
+
+    public String getRecRemark() {
+        return recRemark;
+    }
+
+    public void setRecRemark(String recRemark) {
+        this.recRemark = recRemark;
+    }
+
+    public String getDonorId() {
+        return donorIc;
+    }
+
+    public void setDonorId(String donorIc) {
+        this.donorIc = donorIc;
+    }
+
+    public String getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(String recordId) {
+        this.recordId = recordId;
+    }
 
     public String getHistoryId() {
         return historyId;
@@ -31,11 +53,11 @@ public class DonationHistory extends GeneralEntity {
         this.bloodSerialNo = bloodSerialNo;
     }
 
-    public Date getDonateDate() {
+    public String getDonateDate() {
         return donateDate;
     }
 
-    public void setDonateDate(Date donateDate) {
+    public void setDonateDate(String donateDate) {
         this.donateDate = donateDate;
     }
 
@@ -53,5 +75,19 @@ public class DonationHistory extends GeneralEntity {
 
     public void setdHospital(String dHospital) {
         this.dHospital = dHospital;
+    }
+
+    @Override
+    public String toString() {
+        return "DonationHistory{" +
+                "historyId='" + historyId + '\'' +
+                ", bloodSerialNo='" + bloodSerialNo + '\'' +
+                ", donateDate='" + donateDate + '\'' +
+                ", amount=" + amount +
+                ", dHospital='" + dHospital + '\'' +
+                ", recRemark='" + recRemark + '\'' +
+                ", donorIc='" + donorIc + '\'' +
+                ", recordId='" + recordId + '\'' +
+                '}';
     }
 }

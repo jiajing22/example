@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.base.GeneralService;
 import com.example.demo.entity.DonationHistory;
+import com.example.demo.util.Util;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,9 +12,16 @@ import java.util.concurrent.ExecutionException;
 public class DonationHistoryService extends GeneralService {
     private static final String COLLECTION_NAME = "donationHistory";
 
-    public String addHistory (DonationHistory history) throws ExecutionException, InterruptedException {
-        history.setDocumentId(history.getDocumentId());
-        return firestoreCreate(history, COLLECTION_NAME);
+    public String addHistory (DonationHistory history) throws Exception {
+//        String lastID = firestoreGetLastID(COLLECTION_NAME);
+//        history.setDocumentId(Util.generateId("History",lastID));
+//        history.setHistoryId(Util.generateId("History",lastID));
+        String status = firestoreCreate(history, COLLECTION_NAME);
+
+        if( status != null){
+            return "History insert success!";
+        }
+        return null;
     }
 
     public DonationHistory getHistory(String documentId) throws ExecutionException, InterruptedException {

@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.entity.Record;
 import com.example.demo.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,8 +17,12 @@ public class RecordController {
     private RecordService recordService;
 
     @PostMapping("/record")
-    public String addRecord(@RequestBody Record record) throws ExecutionException, InterruptedException {
-        return recordService.addRecord(record);
+    public ResponseEntity<String> addRecord(@RequestBody Record record) throws Exception {
+        String addRecord = recordService.addRecord(record);
+        if ( addRecord != null ){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Record Added Failed",HttpStatus.NOT_FOUND);
     }
     @GetMapping("/record/{documentId}")
     public Record getRecord(@PathVariable String documentId) throws ExecutionException, InterruptedException {
