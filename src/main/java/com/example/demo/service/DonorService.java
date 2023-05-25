@@ -21,7 +21,8 @@ public class DonorService extends GeneralService {
     private static final String USER_TYPE = "donor";
 
     public String addDonor (Donor donor) throws Exception {
-        int id= getAllDonor().size()+1;
+        //TODO: Double check the commented line
+//        int id= getAllDonor().size()+1;
         String lastID = firestoreGetLastID(COLLECTION_NAME);
         donor.setDocumentId(Util.generateId("Donor",lastID));
         donor.setDonorId(Util.generateId("Donor",lastID));

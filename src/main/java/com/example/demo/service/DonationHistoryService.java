@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import com.example.demo.base.GeneralService;
 import com.example.demo.entity.DonationHistory;
-import com.example.demo.util.Util;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,5 +38,9 @@ public class DonationHistoryService extends GeneralService {
 
     public List<DonationHistory> getAllHistory() throws ExecutionException, InterruptedException {
         return firestoreGetAll(DonationHistory.class, COLLECTION_NAME);
+    }
+
+    public List<DonationHistory> getHistoryRecordByIc(String donorIc) throws ExecutionException, InterruptedException {
+        return firestoreGetByIc(COLLECTION_NAME, donorIc);
     }
 }

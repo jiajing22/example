@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.base.GeneralService;
 import com.example.demo.entity.BDCentre;
+import com.example.demo.util.Util;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +13,9 @@ public class BDCentreService extends GeneralService {
     private static final String COLLECTION_NAME = "bdcentre";
 
     public String addBDCentre (BDCentre bdCentre) throws ExecutionException, InterruptedException {
-        bdCentre.setDocumentId(bdCentre.getDocumentId());
+        String lastId = firestoreGetLastID(COLLECTION_NAME);
+        bdCentre.setDocumentId(Util.generateId("BDCentre",lastId));
+        bdCentre.setCentreId(bdCentre.getDocumentId());
         return firestoreCreate(bdCentre, COLLECTION_NAME);
     }
 
@@ -20,9 +23,14 @@ public class BDCentreService extends GeneralService {
         return (BDCentre)firestoreGet(documentId, COLLECTION_NAME, BDCentre.class);
     }
 
-    public String updateBDCentre (BDCentre bdCentre) throws ExecutionException, InterruptedException {
-        bdCentre.setDocumentId(bdCentre.getDocumentId());
-        return firestoreUpdate(bdCentre, COLLECTION_NAME);
+    public String updateBDCentre (BDCentre bdCentre, String documentId) throws ExecutionException, InterruptedException {
+        BDCentre isExist = getBDCentre(documentId);
+        if (isExist != null){
+            bdCentre.setDocumentId(documentId);
+            bdCentre.setCentreId(documentId);
+            return firestoreUpdate(bdCentre, COLLECTION_NAME);
+        }
+        return null;
     }
 
     public String deleteBDCentre(String documentId) throws ExecutionException, InterruptedException {

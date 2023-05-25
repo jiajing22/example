@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.entity.DonationHistory;
 import com.example.demo.service.DonationHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,5 +37,16 @@ public class DonationHistoryController {
     @GetMapping("/history")
     public List<DonationHistory> getAllHistory() throws ExecutionException, InterruptedException {
         return donationHistoryService.getAllHistory();
+    }
+
+    @GetMapping("/history/donation/{donorIc}")
+    public ResponseEntity<List<DonationHistory>> getUserAllHistory(@PathVariable String donorIc) throws ExecutionException, InterruptedException {
+        List <DonationHistory> list = donationHistoryService.getHistoryRecordByIc(donorIc);
+
+        if ( list == null ){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        }
+        return new ResponseEntity<List<DonationHistory>>(list, HttpStatus.OK);
     }
 }

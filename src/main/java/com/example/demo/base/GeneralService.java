@@ -1,5 +1,6 @@
 package com.example.demo.base;
 
+import com.example.demo.entity.DonationHistory;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
@@ -174,12 +175,14 @@ public class GeneralService {
 //        return null;
 //    }
 
+
+    //Need to be deleted/else
     public String firestoreUpdate(GeneralEntity object, String collection) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(collection).document(object.getDocumentId()).set(object);
 
         //Need to find the document ID first
-        return collectionApiFuture.get().getUpdateTime().toString();
+        return "Document with Document ID " + object.getDocumentId() + " has been successfully updated.";
     }
 
     public String firestoreDelete(String documentId, String collection) throws ExecutionException, InterruptedException {
@@ -236,7 +239,7 @@ public class GeneralService {
         return objectList;
     }
 
-    public String firestoreGetLastID(String collection) throws Exception {
+    public String firestoreGetLastID(String collection) throws ExecutionException, InterruptedException {
         Firestore firestore = FirestoreClient.getFirestore();
         CollectionReference collectionRef = firestore.collection(collection);
 
@@ -250,5 +253,23 @@ public class GeneralService {
         }
 
         return null; // Collection is empty
+    }
+
+//    Donate History Function
+
+    public List <DonationHistory> firestoreGetByIc (String collection, String ic) throws ExecutionException, InterruptedException{
+        Firestore firestore = FirestoreClient.getFirestore();
+        CollectionReference collectionRef = firestore.collection(collection);
+        Query query = collectionRef.whereEqualTo("donorId", ic);
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+        List<DonationHistory> donationHistoryList = new ArrayList<>();
+        for (QueryDocumentSnapshot document : querySnapshot.get().getDocuments()) {
+            DonationHistory donationHistory = document.toObject(DonationHistory.class);
+            donationHistoryList.add(donationHistory);
+        }
+        if (donationHistoryList.isEmpty()){
+            return null;
+        }
+        return donationHistoryList;
     }
 }
