@@ -43,10 +43,6 @@ public class DonationHistoryController {
     public ResponseEntity<List<DonationHistory>> getUserAllHistory(@PathVariable String donorIc) throws ExecutionException, InterruptedException {
         List <DonationHistory> list = donationHistoryService.getHistoryRecordByIc(donorIc);
 
-        if ( list == null ){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        }
         return new ResponseEntity<List<DonationHistory>>(list, HttpStatus.OK);
     }
 }

@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.FormData;
 import com.example.demo.entity.RegistrationForm;
 import com.example.demo.service.RegistrationFormService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,8 +18,12 @@ public class RegistrationFormController {
     private RegistrationFormService registrationFormService;
 
     @PostMapping("/registration")
-    public String addForm(@RequestBody RegistrationForm form) throws ExecutionException, InterruptedException {
-        return registrationFormService.addRegForm(form);
+    public ResponseEntity<String> addForm(@RequestBody FormData formData) throws ExecutionException, InterruptedException {
+        String status = registrationFormService.addRegForm(formData);
+        if (status == null){
+            return new ResponseEntity<>("Record Added Failed", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>("Record Added Successfully",HttpStatus.OK);
     }
     @GetMapping("/registration/{documentId}")
     public RegistrationForm getForm(@PathVariable String documentId) throws ExecutionException, InterruptedException {

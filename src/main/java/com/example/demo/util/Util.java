@@ -18,6 +18,7 @@ public class Util {
             case "History": prefix = "DH"; break;
             case "Record": prefix = "RC"; break;
             case "Registration": prefix = "RF"; break;
+            case "RegFormField": prefix = "FD"; break;
             case "Staff": prefix = "ST"; break;
         }
 

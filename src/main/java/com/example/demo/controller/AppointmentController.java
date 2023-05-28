@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.entity.Appointment;
 import com.example.demo.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +18,12 @@ public class AppointmentController {
     private AppointmentService appointmentService;
 
     @PostMapping("/appointment")
-    public String addAppointment(@RequestBody Appointment appointment) throws ExecutionException, InterruptedException {
-        return appointmentService.addAppointment(appointment);
+    public ResponseEntity<String> addAppointment(@RequestBody Appointment appointment) throws ExecutionException, InterruptedException {
+        String status = appointmentService.addAppointment(appointment);
+        if (status != null){
+            return new ResponseEntity<>("Appointment Booked Successfully!",HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Appointment Booked Failed",HttpStatus.NOT_FOUND);
     }
     @GetMapping("/appointment/{documentId}")
     public Appointment getAppointment(@PathVariable String documentId) throws ExecutionException, InterruptedException {
@@ -35,5 +41,10 @@ public class AppointmentController {
     @GetMapping("/appointment")
     public List<Appointment> getAllAppointment() throws ExecutionException, InterruptedException {
         return appointmentService.getAllAppointment();
+    }
+
+    @PostMapping("/appointment-list")
+    public List<Appointment> getAppointmentByIc(@RequestBody Appointment appointment) throws ExecutionException, InterruptedException {
+        return appointmentService.getAppointmentListByIc(appointment.getDonorId());
     }
 }

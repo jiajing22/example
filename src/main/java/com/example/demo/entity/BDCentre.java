@@ -8,6 +8,8 @@ public class BDCentre extends GeneralEntity {
     private String centreState;
     private String centrePhone;
     private String cAddress;
+    private String workHourStart;
+    private String workHourEnd;
 
     public String getCentreId() {
         return centreId;
@@ -47,5 +49,21 @@ public class BDCentre extends GeneralEntity {
 
     public void setcAddress(String cAddress) {
         this.cAddress = cAddress;
+    }
+
+    public String getWorkHourStart() {
+        return workHourStart;
+    }
+
+    public void setWorkHourStart(String workHourStart) {
+        this.workHourStart = workHourStart;
+    }
+
+    public String getWorkHourEnd() {
+        return workHourEnd;
+    }
+
+    public void setWorkHourEnd(String workHourEnd) {
+        this.workHourEnd = workHourEnd;
     }
 }

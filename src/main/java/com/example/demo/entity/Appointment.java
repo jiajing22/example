@@ -5,8 +5,8 @@ import com.google.cloud.Timestamp;
 
 public class Appointment extends GeneralEntity {
     private String appointmentId;
-    private Timestamp appmntDate;
-    private Timestamp timeslot;
+    private String appmntDate;
+    private String timeslot;
     private String appmntLocation;
     private String aStatus;
     private String donorId;
@@ -27,19 +27,19 @@ public class Appointment extends GeneralEntity {
         this.appointmentId = appointmentId;
     }
 
-    public Timestamp getAppmntDate() {
+    public String getAppmntDate() {
         return appmntDate;
     }
 
-    public void setAppmntDate(Timestamp appmntDate) {
+    public void setAppmntDate(String appmntDate) {
         this.appmntDate = appmntDate;
     }
 
-    public Timestamp getTimeslot() {
+    public String getTimeslot() {
         return timeslot;
     }
 
-    public void setTimeslot(Timestamp timeslot) {
+    public void setTimeslot(String timeslot) {
         this.timeslot = timeslot;
     }
 
