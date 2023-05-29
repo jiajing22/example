@@ -70,7 +70,7 @@ public class UserController {
     public ResponseEntity<Staff> getStaff(@PathVariable String documentId) throws ExecutionException, InterruptedException {
         Staff staff = staffService.getStaff(documentId);
         if(staff == null){
-            return new ResponseEntity<Staff>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Staff>(HttpStatus.OK);
         }
         return new ResponseEntity<Staff>(staff, HttpStatus.OK);
     }
@@ -92,7 +92,7 @@ public class UserController {
     public ResponseEntity<?> getStaffId(@RequestBody User user)throws Exception {
         Staff staffId = staffService.validateStaffLogin(user.getUserId(), user.getPassword());
         if (staffId == null){
-            return new ResponseEntity<>("Invalid username or password",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Invalid username or password",HttpStatus.OK);
         }
         return new ResponseEntity<>(staffId, HttpStatus.OK);
     }
@@ -110,7 +110,7 @@ public class UserController {
     public ResponseEntity<?> searchDonorById (@RequestParam(value="id") String id) throws Exception{
         Donor donor = donorService.findDonorById(id);
         if ( donor == null ){
-            return new ResponseEntity<>("Donor not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Donor not found", HttpStatus.OK);
         }
         return new ResponseEntity<>(donor, HttpStatus.OK);
     }
@@ -127,9 +127,9 @@ public class UserController {
     public ResponseEntity<String> addDonor(@RequestBody Donor donor) throws Exception {
         String status = donorService.addDonor(donor);
         if (status.equals("documentId")){
-            return new ResponseEntity<>("Existing document ID",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Existing document ID",HttpStatus.OK);
         } else if(status.equals("userId")){
-            return new ResponseEntity<>("The IC Number is already been registered.",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("The IC Number is already been registered.",HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -138,7 +138,7 @@ public class UserController {
     public ResponseEntity<Donor> getDonor(@PathVariable String documentId) throws ExecutionException, InterruptedException {
         Donor donor = donorService.getDonor(documentId);
         if(donor == null){
-            return new ResponseEntity<Donor>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Donor>(HttpStatus.OK);
         }
         return new ResponseEntity<Donor>(donor, HttpStatus.OK);
     }
@@ -147,7 +147,7 @@ public class UserController {
     public ResponseEntity<String> updateDonor(@RequestBody Donor donor) throws ExecutionException, InterruptedException {
         String updateDonor = donorService.updateDonor(donor);
         if(updateDonor == null){
-            return new ResponseEntity<String>("Donor not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>("Donor not found", HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -166,7 +166,7 @@ public class UserController {
     public ResponseEntity<?> getDonorId(@RequestBody User user)throws Exception {
         Donor donorId = donorService.validateDonorLogin(user.getUserId(), user.getPassword());
         if(donorId == null){
-            return new ResponseEntity<>("Invalid username or password",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Invalid username or password",HttpStatus.OK);
         }
         return new ResponseEntity<>(donorId, HttpStatus.OK);
     }
@@ -177,7 +177,7 @@ public class UserController {
         String email = "imjiajing1222@gmail.com";
         String token = donorService.forgetPw(user.getUserId(), user.getEmail());
         if (token == null ){
-            return new ResponseEntity<>("Username not found",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Username not found",HttpStatus.OK);
         }
         String resetUrl = "http://localhost:8080/eDonor/reset-password?token=" + token;
         sendEmail(email, resetUrl);
@@ -188,7 +188,7 @@ public class UserController {
     public ResponseEntity<?> updatePassword(@RequestBody Donor donor) throws Exception {
         String status =  donorService.updatePw(donor.getDonorId(),donor.getPassword());
         if (status == null ){
-            return new ResponseEntity<>("Password Update Failed",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Password Update Failed",HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

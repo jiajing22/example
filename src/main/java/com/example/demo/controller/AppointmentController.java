@@ -20,10 +20,14 @@ public class AppointmentController {
     @PostMapping("/appointment")
     public ResponseEntity<String> addAppointment(@RequestBody Appointment appointment) throws ExecutionException, InterruptedException {
         String status = appointmentService.addAppointment(appointment);
-        if (status != null){
+        if (status.equals("success")){
             return new ResponseEntity<>("Appointment Booked Successfully!",HttpStatus.OK);
+        }else if (status.equals("exist")){
+            return new ResponseEntity<>("You already Booked Appointment at this day",HttpStatus.OK);
+        } else{
+            return new ResponseEntity<>("Appointment Booked Failed",HttpStatus.OK);
+
         }
-        return new ResponseEntity<>("Appointment Booked Failed",HttpStatus.NOT_FOUND);
     }
     @GetMapping("/appointment/{documentId}")
     public Appointment getAppointment(@PathVariable String documentId) throws ExecutionException, InterruptedException {

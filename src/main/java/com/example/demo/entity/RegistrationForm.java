@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.example.demo.base.GeneralEntity;
+import com.google.cloud.Timestamp;
 
 import java.util.Date;
 
@@ -9,7 +10,7 @@ public class RegistrationForm extends GeneralEntity {
     private String name;
     private String ic;
     private String dob;
-    private Number age;
+    private Integer age;
     private String ethnic;
     private String maritial;
     private String occupation;
@@ -19,7 +20,7 @@ public class RegistrationForm extends GeneralEntity {
     private String state;
     private String postcode;
     private String formStatus;
-    private String submitTime;
+    private Timestamp submitTime;
     private String donorId; //FK
     private String formFieldsId; //FK
 
@@ -39,11 +40,11 @@ public class RegistrationForm extends GeneralEntity {
         this.formStatus = formStatus;
     }
 
-    public String getSubmitTime() {
+    public Timestamp getSubmitTime() {
         return submitTime;
     }
 
-    public void setSubmitTime(String submitTime) {
+    public void setSubmitTime(Timestamp submitTime) {
         this.submitTime = submitTime;
     }
 
@@ -87,11 +88,11 @@ public class RegistrationForm extends GeneralEntity {
         this.dob = dob;
     }
 
-    public Number getAge() {
+    public Integer  getAge() {
         return age;
     }
 
-    public void setAge(Number age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 

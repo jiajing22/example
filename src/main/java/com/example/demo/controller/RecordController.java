@@ -22,7 +22,7 @@ public class RecordController {
         if ( addRecord != null ){
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>("Record Added Failed",HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Record Added Failed",HttpStatus.OK);
     }
     @GetMapping("/record/{documentId}")
     public Record getRecord(@PathVariable String documentId) throws ExecutionException, InterruptedException {

@@ -23,7 +23,7 @@ public class BDCentreController {
         if( status != null ){
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>("Record Added Failed",HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Record Added Failed",HttpStatus.OK);
 
     }
     @GetMapping("/bdcentre/{documentId}")
@@ -32,14 +32,14 @@ public class BDCentreController {
         if (item != null){
             return new ResponseEntity<BDCentre>(item,HttpStatus.OK);
         }
-        return new ResponseEntity<BDCentre>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<BDCentre>(HttpStatus.OK);
     }
 
     @PutMapping("/bdcentre/{documentId}")
     public ResponseEntity<String> updateBDCentre(@PathVariable String documentId, @RequestBody BDCentre bdCentre) throws ExecutionException, InterruptedException {
         String result = bdCentreService.updateBDCentre(bdCentre,documentId);
         if (result == null ){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Record Not Exist");
+            return ResponseEntity.status(HttpStatus.OK).body("Record Not Exist");
         }
         return ResponseEntity.ok(result);
     }
@@ -48,7 +48,7 @@ public class BDCentreController {
     public ResponseEntity<String> deleteBDCentre(@PathVariable String documentId) throws ExecutionException, InterruptedException {
         String result = bdCentreService.deleteBDCentre(documentId);
         if (result == null ){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Record delete failed");
+            return ResponseEntity.status(HttpStatus.OK).body("Record delete failed");
         }
         return ResponseEntity.ok(result);
     }

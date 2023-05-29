@@ -21,7 +21,7 @@ public class RegistrationFormController {
     public ResponseEntity<String> addForm(@RequestBody FormData formData) throws ExecutionException, InterruptedException {
         String status = registrationFormService.addRegForm(formData);
         if (status == null){
-            return new ResponseEntity<>("Record Added Failed", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Record Added Failed", HttpStatus.OK);
         }
         return new ResponseEntity<>("Record Added Successfully",HttpStatus.OK);
     }
@@ -40,5 +40,14 @@ public class RegistrationFormController {
     @GetMapping("/registration")
     public List<RegistrationForm> getAllForm() throws ExecutionException, InterruptedException {
         return registrationFormService.getAllRegForm();
+    }
+
+    @GetMapping("/registration-form/{documentId}") //documentid = donorIc = donorId
+    public ResponseEntity<List<FormData>> getFormByIc(@PathVariable String documentId) throws ExecutionException, InterruptedException {
+        List <FormData> formData = registrationFormService.getRegFormByIc(documentId);
+        if(formData.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(formData, HttpStatus.OK);
     }
 }

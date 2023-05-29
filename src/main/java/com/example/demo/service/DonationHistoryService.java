@@ -41,6 +41,6 @@ public class DonationHistoryService extends GeneralService {
     }
 
     public List<DonationHistory> getHistoryRecordByIc(String donorIc) throws ExecutionException, InterruptedException {
-        return firestoreGetByIc(COLLECTION_NAME, donorIc);
+        return firestoreGetByIc(DonationHistory.class, COLLECTION_NAME, donorIc);
     }
 }

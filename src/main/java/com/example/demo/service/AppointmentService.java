@@ -21,7 +21,7 @@ public class AppointmentService extends GeneralService {
         String lastID = firestoreGetLastID(COLLECTION_NAME);
         appointment.setDocumentId(Util.generateId("Appointment",lastID));
         appointment.setAppointmentId(appointment.getDocumentId());
-        return firestoreCreate(appointment, COLLECTION_NAME);
+        return firestoreCreateAppmt(appointment, COLLECTION_NAME);
     }
 
     public Appointment getAppointment(String documentId) throws ExecutionException, InterruptedException {

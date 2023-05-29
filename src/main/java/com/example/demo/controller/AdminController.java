@@ -43,7 +43,7 @@ public class AdminController {
     public ResponseEntity<?> getStaffId(@RequestBody User user)throws Exception {
         Admin adminId = adminService.validateAdminLogin(user.getUserId(), user.getPassword());
         if (adminId == null){
-            return new ResponseEntity<>("Invalid username or password", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Invalid username or password", HttpStatus.OK);
         }
         return new ResponseEntity<>(adminId, HttpStatus.OK);
     }

@@ -1,5 +1,6 @@
 package com.example.demo.base;
 
+import com.example.demo.entity.Appointment;
 import com.example.demo.entity.DonationHistory;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
@@ -96,26 +97,6 @@ public class GeneralService {
         }
     }
 
-//    public <T> List<T> firestoreGetByUserId(String id, String collection, Class<T> c, String prefix) throws ExecutionException, InterruptedException {
-//        Firestore dbFirestore = FirestoreClient.getFirestore();
-//        CollectionReference collectionRef = dbFirestore.collection(collection);
-//        Query query = collectionRef.whereGreaterThanOrEqualTo(FieldPath.documentId(), prefix)
-//                .whereLessThan(FieldPath.documentId(), prefix + Character.MAX_VALUE)
-//                .whereEqualTo("userId", id)
-//                .limit(1);
-//        ApiFuture<QuerySnapshot> querySnapshot = query.get();
-//        List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
-//
-//        List<T> result = new ArrayList<>();
-//        for (QueryDocumentSnapshot document : documents) {
-//            T item = document.toObject(c);
-//            result.add(item);
-//        }
-//
-//        return result;
-//    }
-
-
     public String firestoreGetIdByUsername (String username, String collection) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         CollectionReference collectionRef = dbFirestore.collection(collection);
@@ -160,23 +141,6 @@ public class GeneralService {
         }
     }
 
-//    public String firestoreGetIdByCredentials(String username, String password, String prefix, String collection) throws ExecutionException, InterruptedException {
-//        Firestore dbFirestore = FirestoreClient.getFirestore();
-//        CollectionReference collectionReference = dbFirestore.collection(collection);
-//        Query query = collectionReference.whereEqualTo("userId", username)
-//                .whereEqualTo("password", password)
-//                .whereGreaterThanOrEqualTo(FieldPath.documentId(), prefix)
-//                .whereLessThan(FieldPath.documentId(), prefix + Character.MAX_VALUE);
-//
-//        ApiFuture<QuerySnapshot> querySnapshot = query.get();
-//        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
-//            return document.getId();
-//        }
-//        return null;
-//    }
-
-
-    //Need to be deleted/else
     public String firestoreUpdate(GeneralEntity object, String collection) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(collection).document(object.getDocumentId()).set(object);
@@ -227,15 +191,6 @@ public class GeneralService {
             object = document.toObject(c);
             objectList.add(object);
         }
-
-//        while(iterator.hasNext()){
-//            DocumentReference documentRef = iterator.next();
-//            ApiFuture<DocumentSnapshot> future = documentRef.get();
-//            DocumentSnapshot document = future.get();
-//
-//            object = document.toObject(c);
-//            objectList.add(object);
-//        }
         return objectList;
     }
 
@@ -255,21 +210,47 @@ public class GeneralService {
         return null; // Collection is empty
     }
 
-//    Donate History Function
 
-    public List <DonationHistory> firestoreGetByIc (String collection, String ic) throws ExecutionException, InterruptedException{
+    public <T> List<T> firestoreGetByIc(Class<T> c, String collection, String ic) throws ExecutionException, InterruptedException {
         Firestore firestore = FirestoreClient.getFirestore();
         CollectionReference collectionRef = firestore.collection(collection);
         Query query = collectionRef.whereEqualTo("donorId", ic);
         ApiFuture<QuerySnapshot> querySnapshot = query.get();
-        List<DonationHistory> donationHistoryList = new ArrayList<>();
+        List<T> resultList = new ArrayList<>();
         for (QueryDocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            DonationHistory donationHistory = document.toObject(DonationHistory.class);
-            donationHistoryList.add(donationHistory);
+            T obj = document.toObject(c);
+            resultList.add(obj);
         }
-        if (donationHistoryList.isEmpty()){
+        if (resultList.isEmpty()) {
             return null;
         }
-        return donationHistoryList;
+        return resultList;
+    }
+
+    public String firestoreCreateAppmt(Appointment appointment, String collection) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+
+        // Check if a document with the same donorId and appmntDate already exists
+        Query query = dbFirestore.collection(collection)
+                .whereEqualTo("donorId", appointment.getDonorId())
+                .whereEqualTo("appmntDate", appointment.getAppmntDate());
+
+        ApiFuture<QuerySnapshot> querySnapshotFuture = query.get();
+        QuerySnapshot querySnapshot = querySnapshotFuture.get();
+
+        if (!querySnapshot.isEmpty()) {
+            return "exist";
+        }
+
+        DocumentReference docRef = dbFirestore.collection(collection).document(appointment.getDocumentId());
+        ApiFuture<DocumentSnapshot> docSnapshotFuture = docRef.get();
+        DocumentSnapshot docSnapshot = docSnapshotFuture.get();
+
+        if (docSnapshot.exists()) {
+            return null;
+        }
+
+        ApiFuture<WriteResult> collectionApiFuture = docRef.set(appointment);
+        return "success";
     }
 }

@@ -61,6 +61,10 @@ public class RegFormFields extends GeneralEntity {
     private boolean q15b;
     private boolean q15c;
     private boolean q15d;
+    private boolean t1;
+    private boolean t2;
+    private boolean t3;
+    private boolean t4;
 
     public boolean isQ1() {
         return q1;
@@ -524,5 +528,37 @@ public class RegFormFields extends GeneralEntity {
 
     public void setRegFormId(String regFormId) {
         this.regFormId = regFormId;
+    }
+
+    public boolean isT1() {
+        return t1;
+    }
+
+    public void setT1(boolean t1) {
+        this.t1 = t1;
+    }
+
+    public boolean isT2() {
+        return t2;
+    }
+
+    public void setT2(boolean t2) {
+        this.t2 = t2;
+    }
+
+    public boolean isT3() {
+        return t3;
+    }
+
+    public void setT3(boolean t3) {
+        this.t3 = t3;
+    }
+
+    public boolean isT4() {
+        return t4;
+    }
+
+    public void setT4(boolean t4) {
+        this.t4 = t4;
     }
 }
