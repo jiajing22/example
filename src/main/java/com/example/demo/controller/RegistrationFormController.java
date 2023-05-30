@@ -29,7 +29,7 @@ public class RegistrationFormController {
     public RegistrationForm getForm(@PathVariable String documentId) throws ExecutionException, InterruptedException {
         return registrationFormService.getRegForm(documentId);
     }
-    @PutMapping("/registration")
+    @PostMapping("/registration-update")
     public String updateForm(@RequestBody RegistrationForm form) throws ExecutionException, InterruptedException {
         return registrationFormService.updateRegForm(form);
     }
@@ -37,14 +37,23 @@ public class RegistrationFormController {
     public String deleteForm(@PathVariable String documentId) throws ExecutionException, InterruptedException {
         return registrationFormService.deleteRegForm(documentId);
     }
-    @GetMapping("/registration")
-    public List<RegistrationForm> getAllForm() throws ExecutionException, InterruptedException {
-        return registrationFormService.getAllRegForm();
-    }
+//    @GetMapping("/registration")
+//    public List<RegistrationForm> getAllForm() throws ExecutionException, InterruptedException {
+//        return registrationFormService.getAllRegForm();
+//    }
 
     @GetMapping("/registration-form/{documentId}") //documentid = donorIc = donorId
     public ResponseEntity<List<FormData>> getFormByIc(@PathVariable String documentId) throws ExecutionException, InterruptedException {
         List <FormData> formData = registrationFormService.getRegFormByIc(documentId);
+        if(formData.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(formData, HttpStatus.OK);
+    }
+
+    @GetMapping("/registration-form")
+    public ResponseEntity<List<FormData>> getAllFormData() throws ExecutionException, InterruptedException {
+        List <FormData> formData = registrationFormService.getAllRegForm();
         if(formData.isEmpty()){
             return new ResponseEntity<>(HttpStatus.OK);
         }

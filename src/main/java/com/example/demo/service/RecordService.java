@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.base.GeneralService;
 import com.example.demo.entity.DonationHistory;
+import com.example.demo.entity.Donor;
 import com.example.demo.entity.Record;
 import com.example.demo.util.Util;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,18 @@ public class RecordService extends GeneralService {
         if (insertHistory == null || status == null){
             return null;
         }
+
+        Donor donorInfo = getDonor(record.getDonorIc());
+        if (donorInfo !=null ){
+            List <DonationHistory> list = getHistoryRecordByIc(record.getDonorIc());
+            donorInfo.setDonationTimes(list.size());
+            String update = firestoreUpdate(donorInfo, "donor");
+        }
         return record.getRecordId();
+    }
+
+    public Donor getDonor(String donorId) throws ExecutionException, InterruptedException {
+        return (Donor)firestoreGetByUserId(donorId, "donor", Donor.class);
     }
 
     public Record getRecord(String documentId) throws ExecutionException, InterruptedException {
@@ -61,5 +73,9 @@ public class RecordService extends GeneralService {
 
     public List<Record> getAllRecord() throws ExecutionException, InterruptedException {
         return firestoreGetAll(Record.class, COLLECTION_NAME);
+    }
+
+    public List<DonationHistory> getHistoryRecordByIc(String donorIc) throws ExecutionException, InterruptedException {
+        return firestoreGetByIc(DonationHistory.class, COLLECTION_NAME_HISTORY, donorIc);
     }
 }

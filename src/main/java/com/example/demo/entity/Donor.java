@@ -7,6 +7,7 @@ public class Donor extends User{
     private String bloodType;
     private String address;
     private String phone;
+    private Integer donationTimes;
 
     public String getDonorId() {
         return donorId;
@@ -46,6 +47,14 @@ public class Donor extends User{
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Integer getDonationTimes() {
+        return donationTimes;
+    }
+
+    public void setDonationTimes(Integer donationTimes) {
+        this.donationTimes = donationTimes;
     }
 
     @Override

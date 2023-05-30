@@ -12,9 +12,7 @@ public class DonationHistoryService extends GeneralService {
     private static final String COLLECTION_NAME = "donationHistory";
 
     public String addHistory (DonationHistory history) throws Exception {
-//        String lastID = firestoreGetLastID(COLLECTION_NAME);
-//        history.setDocumentId(Util.generateId("History",lastID));
-//        history.setHistoryId(Util.generateId("History",lastID));
+        // ALready been called in Record Service
         String status = firestoreCreate(history, COLLECTION_NAME);
 
         if( status != null){

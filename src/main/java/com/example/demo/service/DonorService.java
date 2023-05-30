@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.base.GeneralService;
+import com.example.demo.entity.DonationHistory;
 import com.example.demo.entity.Donor;
 import com.example.demo.entity.PasswordResetToken;
 import com.example.demo.util.SHA256;
@@ -21,13 +22,19 @@ public class DonorService extends GeneralService {
     private static final String USER_TYPE = "donor";
 
     public String addDonor (Donor donor) throws Exception {
-        //TODO: Double check the commented line
-//        int id= getAllDonor().size()+1;
         String lastID = firestoreGetLastID(COLLECTION_NAME);
         donor.setDocumentId(Util.generateId("Donor",lastID));
         donor.setDonorId(Util.generateId("Donor",lastID));
         donor.setPassword(SHA256.hash(donor.getPassword()));
         donor.setUserType(USER_TYPE);
+        List <DonationHistory> list = getHistoryRecordByIc(donor.getUserId());
+        if (list == null){
+            donor.setDonationTimes(0);
+            donor.setDonorType("New Donor");
+        } else {
+            donor.setDonationTimes(list.size());
+            donor.setDonorType("Regular/Repeat Donor");
+        }
         return firestoreAddNewUser(donor, COLLECTION_NAME, donor.getUserId());
     }
 
@@ -74,16 +81,11 @@ public class DonorService extends GeneralService {
     }
 
     public Donor findDonorById(String userId) throws ExecutionException, InterruptedException {
-        Donor donorInfo = (Donor)firestoreGetByUserId(userId, COLLECTION_NAME, Donor.class);
-        if(donorInfo == null){
-            return null;
-        }
-        Donor donorNeededInfo = new Donor();
-        donorNeededInfo.setUserId(donorInfo.getUserId());
-        donorNeededInfo.setFullName(donorInfo.getFullName());
-        donorNeededInfo.setBloodType(donorInfo.getBloodType());
-        System.out.println(donorNeededInfo);
-        return donorNeededInfo;
+        return (Donor)firestoreGetByUserId(userId, COLLECTION_NAME, Donor.class);
+    }
+
+    public List<DonationHistory> getHistoryRecordByIc(String donorIc) throws ExecutionException, InterruptedException {
+        return firestoreGetByIc(DonationHistory.class, "donationHistory", donorIc);
     }
 
     public String updatePw (String donorId, String password) throws ExecutionException, InterruptedException, UtilException {

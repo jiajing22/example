@@ -51,17 +51,21 @@ public class RegistrationFormService extends GeneralService {
     }
 
     public String updateRegForm (RegistrationForm regForm) throws ExecutionException, InterruptedException {
-        regForm.setDocumentId(regForm.getDocumentId());
-        return firestoreUpdate(regForm, COLLECTION_NAME);
+        RegistrationForm copy = getRegForm(regForm.getDocumentId());
+        if (copy == null){
+            return null;
+        }
+        copy.setFormStatus(regForm.getFormStatus());
+        return firestoreUpdate(copy, COLLECTION_NAME);
     }
 
     public String deleteRegForm(String documentId) throws ExecutionException, InterruptedException {
         return firestoreDelete(documentId, COLLECTION_NAME);
     }
 
-    public List<RegistrationForm> getAllRegForm() throws ExecutionException, InterruptedException {
-        return firestoreGetAll(RegistrationForm.class, COLLECTION_NAME);
-    }
+//    public List<RegistrationForm> getAllRegForm() throws ExecutionException, InterruptedException {
+//        return firestoreGetAll(RegistrationForm.class, COLLECTION_NAME);
+//    }
 
     public List<FormData> getRegFormByIc(String donorIc) throws ExecutionException, InterruptedException {
         List <RegistrationForm> registrationFormList = firestoreGetByIc(RegistrationForm.class, COLLECTION_NAME, donorIc);
@@ -86,7 +90,34 @@ public class RegistrationFormService extends GeneralService {
                 formDataList.add(formData);
             }
         }
-
         return formDataList;
     }
+
+
+    public List<FormData> getAllRegForm() throws ExecutionException, InterruptedException {
+        List <RegistrationForm> registrationFormList = firestoreGetAll(RegistrationForm.class, COLLECTION_NAME);
+        List <RegFormFields> formFieldsList = firestoreGetAll(RegFormFields.class, FIELD_COLLECTION_NAME);
+
+        Map<String, FormData> formDataMap = new HashMap<>();
+
+        // Associate form fields with registration forms based on regFormId
+        for (RegFormFields formFields : formFieldsList) {
+            FormData formData = new FormData();
+            formData.setFormFields(formFields);
+            formDataMap.put(formFields.getRegFormId(), formData);
+        }
+
+        List<FormData> formDataList = new ArrayList<>();
+
+        // Combine registration forms with corresponding form fields
+        for (RegistrationForm registrationForm : registrationFormList) {
+            FormData formData = formDataMap.get(registrationForm.getRegFormId());
+            if (formData != null) {
+                formData.setRegForm(registrationForm);
+                formDataList.add(formData);
+            }
+        }
+        return formDataList;
+    }
+
 }
