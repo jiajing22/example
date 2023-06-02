@@ -126,10 +126,15 @@ public class UserController {
     @PostMapping("/donor")
     public ResponseEntity<String> addDonor(@RequestBody Donor donor) throws Exception {
         String status = donorService.addDonor(donor);
-        if (status.equals("documentId")){
-            return new ResponseEntity<>("Existing document ID",HttpStatus.OK);
-        } else if(status.equals("userId")){
-            return new ResponseEntity<>("The IC Number is already been registered.",HttpStatus.OK);
+        switch (status) {
+            case "documentId":
+                return new ResponseEntity<>("Existing document ID", HttpStatus.OK);
+            case "userId":
+                return new ResponseEntity<>("registeredIc", HttpStatus.OK);
+            case "email":
+                return new ResponseEntity<>("emailUsed", HttpStatus.OK);
+            case "success":
+                return new ResponseEntity<>("Registration Success.", HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -166,7 +171,10 @@ public class UserController {
     public ResponseEntity<?> getDonorId(@RequestBody User user)throws Exception {
         Donor donorId = donorService.validateDonorLogin(user.getUserId(), user.getPassword());
         if(donorId == null){
-            return new ResponseEntity<>("Invalid username or password",HttpStatus.OK);
+            return new ResponseEntity<>("invalid",HttpStatus.OK);
+        }
+        if(!donorId.getIsVerified()){
+            return new ResponseEntity<>("unverified",HttpStatus.OK);
         }
         return new ResponseEntity<>(donorId, HttpStatus.OK);
     }

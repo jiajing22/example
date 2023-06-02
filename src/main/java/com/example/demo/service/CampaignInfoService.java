@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.base.GeneralService;
 import com.example.demo.entity.CampaignInfo;
+import com.example.demo.util.Util;
+import com.google.cloud.Timestamp;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +14,10 @@ public class CampaignInfoService extends GeneralService {
     private static final String COLLECTION_NAME = "campaignInfo";
 
     public String addCampaignInfo (CampaignInfo info) throws ExecutionException, InterruptedException {
-        info.setDocumentId(info.getDocumentId());
+        String lastID = firestoreGetLastID(COLLECTION_NAME);
+        info.setDocumentId(Util.generateId("Campaign",lastID));
+        info.setCampaignId(info.getDocumentId());
+        info.setPostTime(Timestamp.now());
         return firestoreCreate(info, COLLECTION_NAME);
     }
 

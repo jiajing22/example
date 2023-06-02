@@ -15,7 +15,7 @@ import java.util.Date;
 @Component
 public class CronJob {
 
-    @Scheduled(fixedRate = 60000) // Run daily at midnight
+    @Scheduled(cron = "0 */30 * * * *") // Run daily at midnight
     public void updateExpiredDocuments() {
         Firestore firestore = FirestoreClient.getFirestore();
 

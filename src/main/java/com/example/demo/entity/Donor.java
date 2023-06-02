@@ -7,6 +7,8 @@ public class Donor extends User{
     private String bloodType;
     private String address;
     private String phone;
+    private Boolean isVerified;
+    private String verifiedToken;
     private Integer donationTimes;
 
     public String getDonorId() {
@@ -57,15 +59,33 @@ public class Donor extends User{
         this.donationTimes = donationTimes;
     }
 
+    public Boolean getIsVerified() {
+        return isVerified;
+    }
+
+    public void setIsVerified(Boolean verified) {
+        this.isVerified = verified;
+    }
+
+    public String getVerifiedToken() {
+        return verifiedToken;
+    }
+
+    public void setVerifiedToken(String verifiedToken) {
+        this.verifiedToken = verifiedToken;
+    }
+
     @Override
     public String toString() {
         return "Donor{" +
-                super.toString()+
                 "donorId='" + donorId + '\'' +
                 ", donorType='" + donorType + '\'' +
                 ", bloodType='" + bloodType + '\'' +
                 ", address='" + address + '\'' +
                 ", phone='" + phone + '\'' +
+                ", isVerified=" + isVerified +
+                ", verifiedToken='" + verifiedToken + '\'' +
+                ", donationTimes=" + donationTimes +
                 '}';
     }
 }

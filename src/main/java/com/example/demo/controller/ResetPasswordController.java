@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.ExecutionException;
+
 @Controller
 @CrossOrigin(origins = "http://localhost:4200/")
 @RequestMapping("/eDonor")
@@ -24,6 +26,24 @@ public class ResetPasswordController {
         }
         model.addAttribute("token", token);
         return "reset-password";
+    }
+
+    @GetMapping("/verify")
+    public String verifyEmail(@RequestParam("token") String token, Model model) throws ExecutionException, InterruptedException {
+        // Validate the token and update user's verification status
+        boolean isValidToken = donorService.validateToken(token);
+        if (isValidToken) {
+            boolean isUpdated = donorService.updateVerificationStatus(token);
+            if (isUpdated) {
+                model.addAttribute("status", "success");
+            } else {
+                model.addAttribute("status", "error");
+            }
+        } else {
+            model.addAttribute("status", "invalid");
+        }
+
+        return "verification";
     }
 
 //    @RequestMapping(value = "/reset-password", method = RequestMethod.GET)

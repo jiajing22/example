@@ -13,6 +13,7 @@ public class User extends GeneralEntity {
     private String gender;
     private String userType;
     private String email;
+    private String address;
     private Timestamp userLastLoginDate;
 
     public String getEmail() {
@@ -69,6 +70,14 @@ public class User extends GeneralEntity {
 
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Override

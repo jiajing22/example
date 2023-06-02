@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Email Verification Success</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      max-width: 400px;
+      margin: 0 auto;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    p {
+      margin-bottom: 20px;
+      color: #555;
+    }
+
+    .success-message {
+      text-align: center;
+      font-weight: bold;
+      color: #008000;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div th:if="${status == 'success'}" class="success-message">
+    <h1>Email Verification Success</h1>
+    <p class="success-message">Your email has been successfully verified!</p>
+    <p>Thank you for verifying your email address. You can now access all the features of our application.</p>
+  </div>
+  <div class="success-message">
+    <h2 th:if="${status == 'error'}">Failed to update verification status</h2>
+    <h2 th:if="${status == 'invalid'}">Invalid token</h2>
+  </div>
+
+
+
+</div>
+</body>
+</html>

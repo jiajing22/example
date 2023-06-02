@@ -10,9 +10,11 @@ import com.example.demo.util.UtilException;
 import com.google.cloud.Timestamp;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Properties;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -35,7 +37,64 @@ public class DonorService extends GeneralService {
             donor.setDonationTimes(list.size());
             donor.setDonorType("Regular/Repeat Donor");
         }
-        return firestoreAddNewUser(donor, COLLECTION_NAME, donor.getUserId());
+
+        donor.setIsVerified(false);
+        String verificationToken = UUID.randomUUID().toString();
+        donor.setVerifiedToken(verificationToken);
+
+        String status = firestoreAddNewUser(donor, COLLECTION_NAME, donor.getUserId());
+
+        if (status.equals("success")){
+            sendVerification(donor.getEmail(), donor.getVerifiedToken());
+        }
+
+        return status;
+    }
+
+    public boolean validateToken (String token) {
+        return findToken(COLLECTION_NAME, token);
+    }
+
+    public boolean updateVerificationStatus (String token) throws ExecutionException, InterruptedException {
+        Donor donorInfo = getDonorInfoByToken(COLLECTION_NAME, token);
+        if( donorInfo== null){
+            return false;
+        }
+        System.out.println(donorInfo);
+        donorInfo.setIsVerified(true);
+        String update = firestoreUpdate(donorInfo,COLLECTION_NAME);
+        return true;
+    }
+
+    public void sendVerification(String email, String token) throws MessagingException {
+        String senderEmail = "edonor.noreply@gmail.com";
+        String senderPassword = "vvhpqvhbwwplpwgq";
+
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", "587");
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+
+        Session session = Session.getInstance(properties, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(senderEmail, senderPassword);
+            }
+        });
+
+        String verificationLink = "http://localhost:8080/eDonor/verify?token=" + token;
+        String content = "<p>Hello,</p>"
+                + "<p>Please click on the link below to verify your email:</p>"
+                + "<p><a href=\"" + verificationLink + "\">Activate now</a></p>"
+                + "<br>";
+
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(senderEmail));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+        message.setSubject("Email Verification");
+        message.setContent(content, "text/html");
+
+        Transport.send(message);
     }
 
     //Get By id
@@ -87,6 +146,7 @@ public class DonorService extends GeneralService {
     public List<DonationHistory> getHistoryRecordByIc(String donorIc) throws ExecutionException, InterruptedException {
         return firestoreGetByIc(DonationHistory.class, "donationHistory", donorIc);
     }
+
 
     public String updatePw (String donorId, String password) throws ExecutionException, InterruptedException, UtilException {
         Donor donorInfo = getDonor(donorId);
@@ -154,11 +214,14 @@ public class DonorService extends GeneralService {
 
             if (id != null && !id.isEmpty()) {
                 Donor donorWithIdOnly = new Donor();
-                donorWithIdOnly.setUserId(id);
-                Donor updateDonorLogin = (Donor)firestoreGet(id, COLLECTION_NAME, Donor.class);
-                updateDonorLogin.setUserLastLoginDate(Timestamp.now());
-                String updateLoginD = firestoreUpdate(updateDonorLogin, COLLECTION_NAME);
-
+                Donor isVerified = getDonor(id);
+                if (isVerified != null){
+                    donorWithIdOnly.setUserId(id);
+                    donorWithIdOnly.setIsVerified(isVerified.getIsVerified());
+                    Donor updateDonorLogin = (Donor)firestoreGet(id, COLLECTION_NAME, Donor.class);
+                    updateDonorLogin.setUserLastLoginDate(Timestamp.now());
+                    String updateLoginD = firestoreUpdate(updateDonorLogin, COLLECTION_NAME);
+                }
                 return donorWithIdOnly;
             } else {
                 return null;

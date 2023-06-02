@@ -1,7 +1,7 @@
 package com.example.demo.base;
 
 import com.example.demo.entity.Appointment;
-import com.example.demo.entity.DonationHistory;
+import com.example.demo.entity.Donor;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
@@ -25,27 +25,6 @@ public class GeneralService {
 
         ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(collection).document(object.getDocumentId()).set(object);
         return collectionApiFuture.get().getUpdateTime().toString();
-    }
-
-    public String firestoreAddNewUser(GeneralEntity object, String collection, String userId) throws ExecutionException, InterruptedException {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-
-        DocumentReference docRef = dbFirestore.collection(collection).document(object.getDocumentId());
-        ApiFuture<DocumentSnapshot> docSnapshotFuture = docRef.get();
-        DocumentSnapshot docSnapshot = docSnapshotFuture.get();
-        if (docSnapshot.exists()) {
-            return "documentId";
-        }
-
-        Query query = dbFirestore.collection(collection).whereEqualTo("userId", userId);
-        ApiFuture<QuerySnapshot> querySnapshotFuture = query.get();
-        QuerySnapshot querySnapshot = querySnapshotFuture.get();
-        if (!querySnapshot.isEmpty()) {
-            return "userId";
-        }
-
-        ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(collection).document(object.getDocumentId()).set(object);
-        return "Registration Success.";
     }
 
     public Object firestoreGet (String id, String collection, Class<?> c) throws ExecutionException, InterruptedException {
@@ -119,26 +98,6 @@ public class GeneralService {
             return document.getId();
         }
         return null;
-    }
-
-    public Boolean firestoreCheckUserEmail(String username, String email, String collection) throws ExecutionException, InterruptedException {
-        Firestore firestore = FirestoreClient.getFirestore();
-        Query query = firestore.collection(collection)
-                .whereEqualTo("userId", username)
-                .whereEqualTo("email", email)
-                .limit(1);
-        ApiFuture<QuerySnapshot> future = query.get();
-        QuerySnapshot snapshot = future.get();
-
-        if (snapshot.isEmpty()) {
-            // No matching documents found
-            return false;
-        } else {
-            // At least one matching document found
-            DocumentReference docRef = snapshot.getDocuments().get(0).getReference();
-            String userId = docRef.getId();
-            return true;
-        }
     }
 
     public String firestoreUpdate(GeneralEntity object, String collection) throws ExecutionException, InterruptedException {
@@ -226,6 +185,118 @@ public class GeneralService {
         }
         return resultList;
     }
+
+//    -------------------------------------------------------------------------------------------------------------------------------------------------
+
+    public Boolean firestoreCheckUserEmail(String username, String email, String collection) throws ExecutionException, InterruptedException {
+        Firestore firestore = FirestoreClient.getFirestore();
+        Query query = firestore.collection(collection)
+                .whereEqualTo("userId", username)
+                .whereEqualTo("email", email)
+                .limit(1);
+        ApiFuture<QuerySnapshot> future = query.get();
+        QuerySnapshot snapshot = future.get();
+
+        if (snapshot.isEmpty()) {
+            // No matching documents found
+            return false;
+        } else {
+            // At least one matching document found
+            DocumentReference docRef = snapshot.getDocuments().get(0).getReference();
+            String userId = docRef.getId();
+            return true;
+        }
+    }
+
+    public Donor firestoreGetByIc (String userId, String collection) throws ExecutionException, InterruptedException {
+        Firestore firestore = FirestoreClient.getFirestore();
+        Query query = firestore.collection(collection)
+                .whereEqualTo("userId", userId)
+                .limit(1);
+        ApiFuture<QuerySnapshot> future = query.get();
+        QuerySnapshot snapshot = future.get();
+
+        if (snapshot.isEmpty()) {
+            // No matching documents found
+            return null;
+        } else {
+            // At least one matching document found
+            DocumentReference docRef = snapshot.getDocuments().get(0).getReference();
+            String id = docRef.getId();
+            Donor donor = snapshot.getDocuments().get(0).toObject(Donor.class);
+            donor.setDocumentId(id);
+            return donor;
+        }
+    }
+
+    public String firestoreAddNewUser(Donor donor, String collection, String userId) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+
+        DocumentReference docRef = dbFirestore.collection(collection).document(donor.getDocumentId());
+        ApiFuture<DocumentSnapshot> docSnapshotFuture = docRef.get();
+        DocumentSnapshot docSnapshot = docSnapshotFuture.get();
+        if (docSnapshot.exists()) {
+            return "documentId";
+        }
+
+        Query query = dbFirestore.collection(collection).whereEqualTo("userId", userId);
+        ApiFuture<QuerySnapshot> querySnapshotFuture = query.get();
+        QuerySnapshot querySnapshot = querySnapshotFuture.get();
+        if (!querySnapshot.isEmpty()) {
+            return "userId";
+        }
+
+        Query query2 = dbFirestore.collection(collection).whereEqualTo("email", donor.getEmail());
+        ApiFuture<QuerySnapshot> querySnapshotFuture2 = query2.get();
+        QuerySnapshot querySnapshot2 = querySnapshotFuture2.get();
+        if (!querySnapshot2.isEmpty()) {
+            return "email";
+        }
+
+        ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(collection).document(donor.getDocumentId()).set(donor);
+        return "success";
+    }
+
+    public boolean findToken (String collection, String token) {
+        Firestore firestore = FirestoreClient.getFirestore();
+        CollectionReference collectionRef = firestore.collection(collection);
+
+        try {
+            Query query = collectionRef.whereEqualTo("verifiedToken", token)
+                                        .whereEqualTo("isVerified", false)
+                                        .limit(1);
+            QuerySnapshot querySnapshot = query.get().get();
+            if (!querySnapshot.isEmpty()) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false; // No matching token found
+    }
+
+    public Donor getDonorInfoByToken(String collection, String token) {
+        Firestore firestore = FirestoreClient.getFirestore();
+        CollectionReference collectionRef = firestore.collection(collection);
+        try {
+            // Create a query to search for documents with a matching token
+            Query query = collectionRef.whereEqualTo("verifiedToken", token).limit(1);
+
+            // Execute the query and get the matching documents
+            ApiFuture<QuerySnapshot> querySnapshotFuture = query.get();
+            QuerySnapshot querySnapshot = querySnapshotFuture.get();
+
+            // If there is a matching document, extract the donor information
+            if (!querySnapshot.isEmpty()) {
+                DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(0);
+                return documentSnapshot.toObject(Donor.class);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null; // No matching document found or an exception occurred
+    }
+
 
     public String firestoreCreateAppmt(Appointment appointment, String collection) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();

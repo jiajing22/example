@@ -6,8 +6,11 @@ import com.google.cloud.Timestamp;
 public class CampaignInfo extends GeneralEntity {
     private String campaignId;
     private Timestamp postTime;
+    private String title;
+    private String eventDate;
+    private String location;
     private String description;
-    private String staffId;
+    private String author;
 
     public String getCampaignId() {
         return campaignId;
@@ -33,11 +36,35 @@ public class CampaignInfo extends GeneralEntity {
         this.description = description;
     }
 
-    public String getStaffId() {
-        return staffId;
+    public String getTitle() {
+        return title;
     }
 
-    public void setStaffId(String staffId) {
-        this.staffId = staffId;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(String eventDate) {
+        this.eventDate = eventDate;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }
