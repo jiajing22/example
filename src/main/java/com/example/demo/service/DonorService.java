@@ -29,6 +29,7 @@ public class DonorService extends GeneralService {
         donor.setDonorId(Util.generateId("Donor",lastID));
         donor.setPassword(SHA256.hash(donor.getPassword()));
         donor.setUserType(USER_TYPE);
+        donor.setUserCreatedDate(Timestamp.now());
         List <DonationHistory> list = getHistoryRecordByIc(donor.getUserId());
         if (list == null){
             donor.setDonationTimes(0);
@@ -60,7 +61,6 @@ public class DonorService extends GeneralService {
         if( donorInfo== null){
             return false;
         }
-        System.out.println(donorInfo);
         donorInfo.setIsVerified(true);
         String update = firestoreUpdate(donorInfo,COLLECTION_NAME);
         return true;
@@ -159,9 +159,26 @@ public class DonorService extends GeneralService {
         }
     }
 
+    public String changePw (PasswordResetToken passwordResetToken) throws ExecutionException, InterruptedException, UtilException {
+        Donor getDonorByEmail = firestoreGetByEmail(passwordResetToken.getEmail(), COLLECTION_NAME);
+        if( getDonorByEmail != null){
+            String hash = SHA256.hash(passwordResetToken.getPassword());
+            getDonorByEmail.setPassword(hash);
+            PasswordResetToken update = getInfo(passwordResetToken.getToken());
+            update.setIsExpired(true);
+            String updateExpired = firestoreUpdate(update,"passwordResetToken");
+            return firestoreUpdate(getDonorByEmail, COLLECTION_NAME);
+        } else {
+            return null;
+        }
+    }
+
+    public PasswordResetToken getInfo(String token) throws ExecutionException, InterruptedException {
+        return (PasswordResetToken)firestoreGet(token, "passwordResetToken", PasswordResetToken.class);
+    }
+
     public String forgetPw (String username, String email) throws ExecutionException, InterruptedException {
         boolean check = isUserExist(username,email);
-        System.out.println("Check: "+ isUserExist(username,email));
         if(check){
             String token = UUID.randomUUID().toString();
             PasswordResetToken resetToken = new PasswordResetToken();
@@ -169,8 +186,8 @@ public class DonorService extends GeneralService {
             resetToken.setToken(token);
             resetToken.setEmail(email);
             resetToken.setCreated(Timestamp.now());
+            resetToken.setIsExpired(false);
             String status = firestoreCreate(resetToken,"passwordResetToken");
-            System.out.println(status);
             return token;
         } else {
             return null;
@@ -179,8 +196,10 @@ public class DonorService extends GeneralService {
 
     public String matchToken (String token) throws ExecutionException, InterruptedException {
         PasswordResetToken checkToken = new PasswordResetToken();
-        checkToken =  (PasswordResetToken) firestoreGet(token, "passwordResetToken", PasswordResetToken.class);
-        System.out.println(checkToken);
+        checkToken =  findPasswordToken("passwordResetToken", token);
+        if (checkToken == null){
+            return null;
+        }
         return checkToken.getEmail();
     }
 
@@ -209,7 +228,6 @@ public class DonorService extends GeneralService {
         if (id != null && !id.isEmpty()) {
 
             String hashPassword = SHA256.hash(userPw);
-            System.out.println("Hashed" + hashPassword);
             id = getUserIdByCredentials(userUserName, hashPassword);
 
             if (id != null && !id.isEmpty()) {

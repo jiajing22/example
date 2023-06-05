@@ -5,6 +5,18 @@ import com.google.cloud.Timestamp;
 
 public class PasswordResetToken extends GeneralEntity {
     private String token;
+    private Boolean isExpired;
+    private String email;
+    private Timestamp created;
+    private String password;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getToken() {
         return token;
@@ -30,6 +42,11 @@ public class PasswordResetToken extends GeneralEntity {
         this.created = created;
     }
 
-    private String email;
-    private Timestamp created;
+    public Boolean getIsExpired() {
+        return isExpired;
+    }
+
+    public void setIsExpired(Boolean isExpired) {
+        this.isExpired = isExpired;
+    }
 }

@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.base.GeneralService;
 import com.example.demo.entity.Staff;
 import com.example.demo.util.SHA256;
+import com.example.demo.util.Util;
 import com.google.cloud.Timestamp;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +17,10 @@ public class StaffService extends GeneralService {
     private static final String USER_TYPE = "staff";
 
     public String addStaff (Staff staff) throws ExecutionException, InterruptedException {
-//        int id= getAllStaff().size()+1;
-        staff.setDocumentId(staff.getDocumentId());
+        String lastId = firestoreGetLastID(COLLECTION_NAME);
+        staff.setDocumentId(Util.generateId("Staff", lastId));
+        staff.setStaffId(staff.getDocumentId());
         staff.setUserType(USER_TYPE);
-//        staff.setUserType(USER_TYPE);
-//        staff.setDate(Timestamp.now());
-//        System.out.println("AA");
-//        System.out.println(Timestamp.now().toDate());
         return firestoreCreate(staff, COLLECTION_NAME);
     }
 
@@ -84,7 +82,6 @@ public class StaffService extends GeneralService {
 //    }
 
     public Staff validateStaffLogin(String userName, String password) throws Exception {
-        System.out.println(SHA256.hash(password));
         String id = getUserIdByCredentials(userName, SHA256.hash(password));
 
         if (id != null && !id.isEmpty()) {

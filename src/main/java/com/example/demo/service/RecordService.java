@@ -25,7 +25,6 @@ public class RecordService extends GeneralService {
 
         DonationHistory history = new DonationHistory();
         String lastHID = firestoreGetLastID(COLLECTION_NAME_HISTORY);
-        System.out.println(lastHID);
         history.setDocumentId(Util.generateId("History",lastHID));
         history.setHistoryId(history.getDocumentId());
         history.setBloodSerialNo(record.getBloodSerialNo());

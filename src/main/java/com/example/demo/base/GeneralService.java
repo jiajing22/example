@@ -2,6 +2,7 @@ package com.example.demo.base;
 
 import com.example.demo.entity.Appointment;
 import com.example.demo.entity.Donor;
+import com.example.demo.entity.PasswordResetToken;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
@@ -208,10 +209,10 @@ public class GeneralService {
         }
     }
 
-    public Donor firestoreGetByIc (String userId, String collection) throws ExecutionException, InterruptedException {
+    public Donor firestoreGetByEmail (String email, String collection) throws ExecutionException, InterruptedException {
         Firestore firestore = FirestoreClient.getFirestore();
         Query query = firestore.collection(collection)
-                .whereEqualTo("userId", userId)
+                .whereEqualTo("email", email)
                 .limit(1);
         ApiFuture<QuerySnapshot> future = query.get();
         QuerySnapshot snapshot = future.get();
@@ -273,6 +274,24 @@ public class GeneralService {
             e.printStackTrace();
         }
         return false; // No matching token found
+    }
+
+    public PasswordResetToken findPasswordToken (String collection, String token) {
+        Firestore firestore = FirestoreClient.getFirestore();
+        CollectionReference collectionRef = firestore.collection(collection);
+
+        try {
+            Query query = collectionRef.whereEqualTo("token", token)
+                    .whereEqualTo("isExpired", false)
+                    .limit(1);
+            QuerySnapshot querySnapshot = query.get().get();
+            if (!querySnapshot.isEmpty()) {
+                return querySnapshot.getDocuments().get(0).toObject(PasswordResetToken.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null; // No matching token found
     }
 
     public Donor getDonorInfoByToken(String collection, String token) {

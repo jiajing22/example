@@ -22,9 +22,12 @@ public class ResetPasswordController {
         String checkToken = donorService.matchToken(token);
         if (checkToken == null) {
             model.addAttribute("errorMessage", "Invalid Token");
-            return null;
+            model.addAttribute("invalid", "true");
+        } else{
+            model.addAttribute("token", token);
+            model.addAttribute("invalid", "false");
+            model.addAttribute("email", checkToken);
         }
-        model.addAttribute("token", token);
         return "reset-password";
     }
 

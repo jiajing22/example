@@ -45,7 +45,7 @@ public class RegistrationFormController {
     @GetMapping("/registration-form/{documentId}") //documentid = donorIc = donorId
     public ResponseEntity<List<FormData>> getFormByIc(@PathVariable String documentId) throws ExecutionException, InterruptedException {
         List <FormData> formData = registrationFormService.getRegFormByIc(documentId);
-        if(formData.isEmpty()){
+        if( formData == null ){
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(formData, HttpStatus.OK);

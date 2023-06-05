@@ -15,6 +15,7 @@ public class User extends GeneralEntity {
     private String email;
     private String address;
     private Timestamp userLastLoginDate;
+    private Timestamp userCreatedDate;
 
     public String getEmail() {
         return email;
@@ -78,6 +79,14 @@ public class User extends GeneralEntity {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Timestamp getUserCreatedDate() {
+        return userCreatedDate;
+    }
+
+    public void setUserCreatedDate(Timestamp userCreatedDate) {
+        this.userCreatedDate = userCreatedDate;
     }
 
     @Override

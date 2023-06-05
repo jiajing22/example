@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Admin;
+import com.example.demo.entity.Donor;
 import com.example.demo.entity.User;
 import com.example.demo.service.AdminService;
+import com.example.demo.util.UtilException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,15 +20,20 @@ public class AdminController {
     private AdminService adminService;
 
     @PostMapping("/admin")
-    public String addAdmin(@RequestBody Admin admin) throws ExecutionException, InterruptedException {
+    public String addAdmin(@RequestBody Admin admin) throws ExecutionException, InterruptedException, UtilException {
         return adminService.addAdmin(admin);
     }
-    @GetMapping("/admin/{documentId}")
-    public Admin getAdmin(@PathVariable String documentId) throws ExecutionException, InterruptedException {
-        return adminService.getAdmin(documentId);
+    @PostMapping("/admin-get")
+    public ResponseEntity<Admin> getAdmin(@RequestBody User user) throws ExecutionException, InterruptedException {
+        Admin admin = adminService.getAdmin(user.getDocumentId());
+        if(admin == null){
+            return new ResponseEntity<Admin>(HttpStatus.OK);
+        }
+        return new ResponseEntity<Admin>(admin, HttpStatus.OK);
     }
-    @PutMapping("/admin")
-    public String updateAdmin(@RequestBody Admin admin) throws ExecutionException, InterruptedException {
+
+    @PutMapping("/admin-update")
+    public String updateAdmin(@RequestBody Admin admin) throws ExecutionException, InterruptedException, UtilException {
         return adminService.updateAdmin(admin);
     }
     @DeleteMapping("/admin/{documentId}")
@@ -43,7 +50,7 @@ public class AdminController {
     public ResponseEntity<?> getStaffId(@RequestBody User user)throws Exception {
         Admin adminId = adminService.validateAdminLogin(user.getUserId(), user.getPassword());
         if (adminId == null){
-            return new ResponseEntity<>("Invalid username or password", HttpStatus.OK);
+            return new ResponseEntity<>( HttpStatus.OK);
         }
         return new ResponseEntity<>(adminId, HttpStatus.OK);
     }

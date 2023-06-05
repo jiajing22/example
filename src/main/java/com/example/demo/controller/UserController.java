@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Donor;
+import com.example.demo.entity.PasswordResetToken;
 import com.example.demo.entity.Staff;
 import com.example.demo.entity.User;
 import com.example.demo.service.DonorService;
@@ -18,10 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -168,33 +166,37 @@ public class UserController {
     }
 
     @RequestMapping(value = "/donor/login", method = RequestMethod.POST)
-    public ResponseEntity<?> getDonorId(@RequestBody User user)throws Exception {
+    public ResponseEntity<Donor> getDonorId(@RequestBody User user)throws Exception {
         Donor donorId = donorService.validateDonorLogin(user.getUserId(), user.getPassword());
         if(donorId == null){
-            return new ResponseEntity<>("invalid",HttpStatus.OK);
-        }
-        if(!donorId.getIsVerified()){
-            return new ResponseEntity<>("unverified",HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(donorId, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/forget-password", method = RequestMethod.POST)
     public ResponseEntity<?> forgotPassword(@RequestBody User user) throws Exception {
-//        String email = (String) request.get("email");
-        String email = "imjiajing1222@gmail.com";
         String token = donorService.forgetPw(user.getUserId(), user.getEmail());
         if (token == null ){
-            return new ResponseEntity<>("Username not found",HttpStatus.OK);
+            return new ResponseEntity<>("not found",HttpStatus.OK);
         }
         String resetUrl = "http://localhost:8080/eDonor/reset-password?token=" + token;
-        sendEmail(email, resetUrl);
-        return ResponseEntity.ok("Password reset email sent successfully");
+        sendEmail(user.getEmail(), resetUrl);
+        return ResponseEntity.ok("success");
     }
 
     @RequestMapping(value = "/update-password", method = RequestMethod.POST)
     public ResponseEntity<?> updatePassword(@RequestBody Donor donor) throws Exception {
         String status =  donorService.updatePw(donor.getDonorId(),donor.getPassword());
+        if (status == null ){
+            return new ResponseEntity<>("Password Update Failed",HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/change-password", method = RequestMethod.POST)
+    public ResponseEntity<?> changePassword(@RequestBody PasswordResetToken passwordResetToken) throws Exception {
+        String status =  donorService.changePw(passwordResetToken);
         if (status == null ){
             return new ResponseEntity<>("Password Update Failed",HttpStatus.OK);
         }

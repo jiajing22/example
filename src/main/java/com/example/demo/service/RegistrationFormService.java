@@ -71,6 +71,10 @@ public class RegistrationFormService extends GeneralService {
         List <RegistrationForm> registrationFormList = firestoreGetByIc(RegistrationForm.class, COLLECTION_NAME, donorIc);
         List <RegFormFields> formFieldsList = firestoreGetByIc(RegFormFields.class, FIELD_COLLECTION_NAME, donorIc);
 
+        if ( formFieldsList == null ){
+            return null;
+        }
+
         Map<String, FormData> formDataMap = new HashMap<>();
 
         // Associate form fields with registration forms based on regFormId
