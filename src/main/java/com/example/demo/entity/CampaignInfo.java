@@ -11,6 +11,7 @@ public class CampaignInfo extends GeneralEntity {
     private String location;
     private String description;
     private String author;
+    private String staffId;
 
     public String getCampaignId() {
         return campaignId;
@@ -66,5 +67,13 @@ public class CampaignInfo extends GeneralEntity {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(String staffId) {
+        this.staffId = staffId;
     }
 }

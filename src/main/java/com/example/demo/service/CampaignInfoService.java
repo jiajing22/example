@@ -26,8 +26,15 @@ public class CampaignInfoService extends GeneralService {
     }
 
     public String updateCampaignInfo (CampaignInfo info) throws ExecutionException, InterruptedException {
-        info.setDocumentId(info.getDocumentId());
-        return firestoreUpdate(info, COLLECTION_NAME);
+        CampaignInfo getPost = getCampaignInfo(info.getCampaignId());
+        if( getPost == null){
+            return null;
+        }
+        getPost.setTitle(info.getTitle());
+        getPost.setEventDate(info.getEventDate());
+        getPost.setLocation(info.getLocation());
+        getPost.setDescription(info.getDescription());
+        return firestoreUpdate(getPost, COLLECTION_NAME);
     }
 
     public String deleteCampaignInfo(String documentId) throws ExecutionException, InterruptedException {
