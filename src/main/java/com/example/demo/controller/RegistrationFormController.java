@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RestController
+@CrossOrigin(origins= "*")
 @RequestMapping("/eDonor")
 public class RegistrationFormController {
     @Autowired

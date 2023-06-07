@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RestController
+@CrossOrigin(origins= "*")
 @RequestMapping("/authorize")
 public class AdminController {
     @Autowired

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200/")
+@CrossOrigin(origins= "*")
 @RequestMapping("/eDonor")
 public class UserController {
 
