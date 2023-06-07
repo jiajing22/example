@@ -180,7 +180,7 @@ public class UserController {
         if (token == null ){
             return new ResponseEntity<>("not found",HttpStatus.OK);
         }
-        String resetUrl = "http://localhost:8080/eDonor/reset-password?token=" + token;
+        String resetUrl = "https://backendproduction.up.railway.app/eDonor/reset-password?token=" + token;
         sendEmail(user.getEmail(), resetUrl);
         return ResponseEntity.ok("success");
     }

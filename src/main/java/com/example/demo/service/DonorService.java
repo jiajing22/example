@@ -82,7 +82,7 @@ public class DonorService extends GeneralService {
             }
         });
 
-        String verificationLink = "http://localhost:8080/eDonor/verify?token=" + token;
+        String verificationLink = "https://backendproduction.up.railway.app/eDonor/verify?token=" + token;
         String content = "<p>Hello,</p>"
                 + "<p>Please click on the link below to verify your email:</p>"
                 + "<p><a href=\"" + verificationLink + "\">Activate now</a></p>"
