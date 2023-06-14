@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RestController
-@CrossOrigin(origins= "*")
+//@CrossOrigin(origins= "*")
 @RequestMapping("/eDonor")
 public class CampaignInfoController {
 
