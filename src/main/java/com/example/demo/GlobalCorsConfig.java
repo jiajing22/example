@@ -28,6 +28,7 @@ public class GlobalCorsConfig {
                 registry.addMapping("/**")
 //                        .allowedOrigins("http://localhost:4200")
 //                        .allowedOrigins("https://jiajing22.github.io/eDonor")
+                        //nihao
                         .allowedMethods(GET, POST, PUT, DELETE, OPTION)
                         .allowedHeaders("*")
                         .allowedOriginPatterns("*")
