@@ -1,8 +1,12 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.CampaignInfo;
+import com.example.demo.entity.Staff;
+import com.example.demo.entity.User;
 import com.example.demo.service.CampaignInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,7 +38,13 @@ public class CampaignInfoController {
         return campaignInfoService.deleteCampaignInfo(documentId);
     }
 
-    @GetMapping("/campaign/get-all")
+//    @GetMapping("/campaign/get-all")
+//    public List<CampaignInfo> getAllCampaign() throws ExecutionException, InterruptedException {
+//        System.out.println("Inside API");
+//        return campaignInfoService.getAllCampaignInfo();
+//    }
+
+    @RequestMapping(value = "/campaign/get-all", method = RequestMethod.GET)
     public List<CampaignInfo> getAllCampaign() throws ExecutionException, InterruptedException {
         System.out.println("Inside API");
         return campaignInfoService.getAllCampaignInfo();
