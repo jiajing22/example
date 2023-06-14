@@ -62,7 +62,26 @@ public class RecordService extends GeneralService {
     }
 
     public String updateRecord (Record record) throws ExecutionException, InterruptedException {
-        record.setDocumentId(record.getDocumentId());
+        Record oriRecord = getRecord(record.getDocumentId());
+        if (oriRecord == null){
+            return null;
+        }
+        record.setRecordId(oriRecord.getDocumentId());
+        record.setStaffId(oriRecord.getStaffId());
+        DonationHistory history = getDonationHistoryByRecId(record.getDocumentId());
+        if (history == null){
+            return "history";
+        }
+        history.setAmount(record.getVolume());
+        history.setBloodSerialNo(record.getBloodSerialNo());
+        history.setdHospital(record.getBloodCentre());
+        history.setDonateDate(record.getRegDate());
+        //TODO: delete the line below
+        history.setDonorId(record.getDonorIc());
+        if(record.getRecRemark() != null ){
+            history.setRecRemark(record.getRecRemark());
+        }
+        String update = firestoreUpdate(history, COLLECTION_NAME_HISTORY);
         return firestoreUpdate(record, COLLECTION_NAME);
     }
 
@@ -76,5 +95,9 @@ public class RecordService extends GeneralService {
 
     public List<DonationHistory> getHistoryRecordByIc(String donorIc) throws ExecutionException, InterruptedException {
         return firestoreGetByIc(DonationHistory.class, COLLECTION_NAME_HISTORY, donorIc);
+    }
+
+    public DonationHistory getDonationHistoryByRecId(String documentId) throws ExecutionException, InterruptedException {
+        return getHistoryById(documentId, COLLECTION_NAME_HISTORY);
     }
 }
