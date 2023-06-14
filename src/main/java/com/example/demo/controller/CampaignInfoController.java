@@ -33,7 +33,7 @@ public class CampaignInfoController {
         return campaignInfoService.deleteCampaignInfo(documentId);
     }
 
-    @GetMapping("/campaign")
+    @GetMapping("/campaign/get-all")
     public List<CampaignInfo> getAllCampaign() throws ExecutionException, InterruptedException {
         return campaignInfoService.getAllCampaignInfo();
     }
