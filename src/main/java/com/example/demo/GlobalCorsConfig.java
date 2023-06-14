@@ -14,6 +14,12 @@ public class GlobalCorsConfig {
         super();
     }
 
+    private static final String GET = "GET";
+    private static final String POST = "POST";
+    private static final String PUT = "PUT";
+    private static final String DELETE = "DELETE";
+    private static final String OPTION = "OPTION";
+
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurerAdapter() {
@@ -21,8 +27,10 @@ public class GlobalCorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**").
                         allowedOrigins("http://localhost:4200").
-                        allowedOrigins("https://jiajing22.github.io/").
-                        allowedMethods("*");
+                        allowedOrigins("https://jiajing22.github.io/")
+                        .allowedMethods(GET, POST, PUT, DELETE, OPTION)
+                        .allowedHeaders("*")
+                        .allowedOriginPatterns("*");
             }
         };
     }
