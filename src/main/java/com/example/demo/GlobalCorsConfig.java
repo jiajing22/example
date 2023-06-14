@@ -30,8 +30,7 @@ public class GlobalCorsConfig {
                         .allowedOrigins("https://jiajing22.github.io/eDonor")
                         //nihao
                         .allowedMethods(GET, POST, PUT, DELETE, OPTION)
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
+                        .allowedHeaders("*");
             }
         };
     }
