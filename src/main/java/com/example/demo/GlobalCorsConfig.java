@@ -25,9 +25,9 @@ public class GlobalCorsConfig {
         return new WebMvcConfigurerAdapter() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").
-                        allowedOrigins("http://localhost:4200").
-                        allowedOrigins("https://jiajing22.github.io/")
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:4200")
+                        .allowedOrigins("https://jiajing22.github.io/eDonor/")
                         .allowedMethods(GET, POST, PUT, DELETE, OPTION)
                         .allowedHeaders("*")
                         .allowedOriginPatterns("*");
