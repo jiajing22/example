@@ -36,6 +36,7 @@ public class CampaignInfoController {
 
     @GetMapping("/campaign/get-all")
     public List<CampaignInfo> getAllCampaign() throws ExecutionException, InterruptedException {
+        System.out.println("Inside API");
         return campaignInfoService.getAllCampaignInfo();
     }
 }
