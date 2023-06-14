@@ -1,6 +1,7 @@
 package com.example.demo.base;
 
 import com.example.demo.entity.Appointment;
+import com.example.demo.entity.DonationHistory;
 import com.example.demo.entity.Donor;
 import com.example.demo.entity.PasswordResetToken;
 import com.google.api.core.ApiFuture;
@@ -103,10 +104,18 @@ public class GeneralService {
 
     public String firestoreUpdate(GeneralEntity object, String collection) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(collection).document(object.getDocumentId()).set(object);
+        DocumentReference documentRef = dbFirestore.collection(collection).document(object.getDocumentId());
+        ApiFuture<DocumentSnapshot> documentSnapshotFuture = documentRef.get();
 
-        //Need to find the document ID first
-        return "Document with Document ID " + object.getDocumentId() + " has been successfully updated.";
+        DocumentSnapshot documentSnapshot = documentSnapshotFuture.get();
+        if (documentSnapshot.exists()) {
+            // Document exists, perform the update
+            ApiFuture<WriteResult> collectionApiFuture = documentRef.set(object);
+            return "success";
+        } else {
+            // Document does not exist
+            return null;
+        }
     }
 
     public String firestoreDelete(String documentId, String collection) throws ExecutionException, InterruptedException {
@@ -316,7 +325,6 @@ public class GeneralService {
         return null; // No matching document found or an exception occurred
     }
 
-
     public String firestoreCreateAppmt(Appointment appointment, String collection) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
 
@@ -342,5 +350,27 @@ public class GeneralService {
 
         ApiFuture<WriteResult> collectionApiFuture = docRef.set(appointment);
         return "success";
+    }
+//    ----------------------------------------------------------------------------------------------------
+
+    public DonationHistory getHistoryById (String recId, String collection) throws ExecutionException, InterruptedException {
+        Firestore firestore = FirestoreClient.getFirestore();
+        Query query = firestore.collection(collection)
+                .whereEqualTo("recordId", recId)
+                .limit(1);
+        ApiFuture<QuerySnapshot> future = query.get();
+        QuerySnapshot snapshot = future.get();
+
+        if (snapshot.isEmpty()) {
+            // No matching documents found
+            return null;
+        } else {
+            // At least one matching document found
+            DocumentReference docRef = snapshot.getDocuments().get(0).getReference();
+            String id = docRef.getId();
+            DonationHistory donationHistory = snapshot.getDocuments().get(0).toObject(DonationHistory.class);
+            donationHistory.setDocumentId(id);
+            return donationHistory;
+        }
     }
 }
