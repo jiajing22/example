@@ -31,7 +31,6 @@ public class GlobalCorsConfig {
                         //nihao
                         .allowedMethods(GET, POST, PUT, DELETE, OPTION)
                         .allowedHeaders("*")
-//                        .allowedOriginPatterns("*")
                         .allowCredentials(true);
             }
         };
