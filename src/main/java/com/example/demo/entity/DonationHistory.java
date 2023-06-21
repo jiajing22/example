@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
 import com.example.demo.base.GeneralEntity;
-import com.example.demo.base.GeneralService;
 
 public class DonationHistory extends GeneralEntity {
     private String historyId;

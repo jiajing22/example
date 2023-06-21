@@ -60,22 +60,6 @@ public class AdminService extends GeneralService {
         return firestoreGetIdByCredentials(username, password, COLLECTION_NAME);
     }
 
-//    public Admin validateAdminLogin(String userName, String password) throws Exception {
-//        String id = getUserIdByCredentials(userName, SHA256.hash(password));
-//
-//        if (id != null && !id.isEmpty()) {
-//            Staff staffWithIdOnly = new Staff();
-//            staffWithIdOnly.setUserId(id);
-//            Staff updateStaffLogin = (Staff)firestoreGet(id, COLLECTION_NAME, Staff.class);
-//            updateStaffLogin.setUserLastLoginDate(Timestamp.now());
-//            String updateLoginS = firestoreUpdate(updateStaffLogin, COLLECTION_NAME);
-//            return staffWithIdOnly;
-//        } else {
-//            return null;
-//        }
-//
-//    }
-
     public Admin validateAdminLogin(String userName, String password) throws Exception {
         String id = getUserIdByCredentials(userName, SHA256.hash(password));
 
@@ -89,6 +73,10 @@ public class AdminService extends GeneralService {
         } else {
             return null;
         }
+    }
 
+    public String updatePassword(Admin admin) throws ExecutionException, InterruptedException, UtilException {
+        String hashed = SHA256.hash(admin.getPassword());
+        return firestoreUpdatePassword(admin.getUserId(),hashed, COLLECTION_NAME);
     }
 }

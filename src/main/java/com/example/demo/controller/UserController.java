@@ -29,29 +29,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-//
-//    @PostMapping("/users")
-//    public String saveUser(@RequestBody User user) throws ExecutionException, InterruptedException {
-//        return userService.createUser(user);
-//    }
-//    @GetMapping("/users/{userId}")
-//    public User getUser(@PathVariable String userId) throws ExecutionException, InterruptedException {
-//        return userService.getUser(userId);
-//    }
-//    @PutMapping("/users")
-//    public String updateUser(@RequestBody User user) throws ExecutionException, InterruptedException {
-//        return userService.updateUser(user);
-//    }
-//    @DeleteMapping("/users/{userId}")
-//    public String deleteUser(@PathVariable String userId) throws ExecutionException, InterruptedException {
-//        return userService.deleteUser(userId);
-//    }
 
-//    @GetMapping("/users/{userId}")
-//    public String getUserIdByUsername(@PathVariable String userId) throws ExecutionException, InterruptedException {
-//        return userService.getUserIdByUsername(userId);
-//    }
-//
     @GetMapping("/users")
     public List<User> getAllUser() throws ExecutionException, InterruptedException {
         return userService.getAllUser();
@@ -180,7 +158,7 @@ public class UserController {
         if (token == null ){
             return new ResponseEntity<>("not found",HttpStatus.OK);
         }
-        String resetUrl = "https://backendproduction.up.railway.app/eDonor/reset-password?token=" + token;
+        String resetUrl = "http://localhost:8080/eDonor/reset-password?token=" + token;
         sendEmail(user.getEmail(), resetUrl);
         return ResponseEntity.ok("success");
     }

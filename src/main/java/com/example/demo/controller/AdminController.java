@@ -37,6 +37,12 @@ public class AdminController {
     public String updateAdmin(@RequestBody Admin admin) throws ExecutionException, InterruptedException, UtilException {
         return adminService.updateAdmin(admin);
     }
+
+    @PutMapping("/admin-update-credential")
+    public String updatePw(@RequestBody Admin admin) throws ExecutionException, InterruptedException, UtilException {
+        return adminService.updatePassword(admin);
+    }
+
     @DeleteMapping("/admin/{documentId}")
     public String deleteAdmin(@PathVariable String documentId) throws ExecutionException, InterruptedException {
         return adminService.deleteAdmin(documentId);

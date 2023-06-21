@@ -82,7 +82,7 @@ public class DonorService extends GeneralService {
             }
         });
 
-        String verificationLink = "https://backendproduction.up.railway.app/eDonor/verify?token=" + token;
+        String verificationLink = "http://localhost:8080/eDonor/verify?token=" + token;
         String content = "<p>Hello,</p>"
                 + "<p>Please click on the link below to verify your email:</p>"
                 + "<p><a href=\"" + verificationLink + "\">Activate now</a></p>"
@@ -106,13 +106,15 @@ public class DonorService extends GeneralService {
         //1. Search current userId
         Donor donorInfo = getDonor(donor.getDonorId());
         if (donorInfo !=null ){
-            donorInfo.setEmail(donor.getEmail());
-            donorInfo.setPhone(donor.getPhone());
             donorInfo.setAddress(donor.getAddress());
             return firestoreUpdate(donorInfo, COLLECTION_NAME);
         } else{
             return null;
         }
+    }
+
+    public String updateDonorInfo (Donor donor) throws ExecutionException, InterruptedException {
+        return "";
     }
 
     public String deleteDonor(String donorId) throws ExecutionException, InterruptedException {

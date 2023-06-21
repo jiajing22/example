@@ -29,7 +29,7 @@ public class GeneralService {
         return collectionApiFuture.get().getUpdateTime().toString();
     }
 
-    public Object firestoreGet (String id, String collection, Class<?> c) throws ExecutionException, InterruptedException {
+    public Object firestoreGet(String id, String collection, Class<?> c) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         DocumentReference documentReference = dbFirestore.collection(collection).document(id);
         ApiFuture<DocumentSnapshot> future = documentReference.get();
@@ -48,8 +48,8 @@ public class GeneralService {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         CollectionReference collectionRef = dbFirestore.collection(collection);
         Query query = collectionRef.whereGreaterThanOrEqualTo(FieldPath.documentId(), prefix)
-                    .whereLessThan(FieldPath.documentId(), prefix + Character.MAX_VALUE)
-                    .whereEqualTo("documentId", id).limit(1);
+                .whereLessThan(FieldPath.documentId(), prefix + Character.MAX_VALUE)
+                .whereEqualTo("documentId", id).limit(1);
         ApiFuture<QuerySnapshot> querySnapshot = query.get();
         List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
 
@@ -78,7 +78,7 @@ public class GeneralService {
         }
     }
 
-    public String firestoreGetIdByUsername (String username, String collection) throws ExecutionException, InterruptedException {
+    public String firestoreGetIdByUsername(String username, String collection) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         CollectionReference collectionRef = dbFirestore.collection(collection);
         Query query = collectionRef.whereEqualTo("userId", username).limit(1);
@@ -125,7 +125,7 @@ public class GeneralService {
         return "Document with Document ID " + documentId + " has been successfully deleted.";
     }
 
-    public <T> List<T> firestoreGetAll (Class<T> c, String collection) throws ExecutionException, InterruptedException {
+    public <T> List<T> firestoreGetAll(Class<T> c, String collection) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         Iterable<DocumentReference> documentReference = dbFirestore.collection(collection).listDocuments();
         Iterator<DocumentReference> iterator = documentReference.iterator();
@@ -133,7 +133,7 @@ public class GeneralService {
         List<T> objectList = new ArrayList<>();
         T object = null;
 
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             DocumentReference documentRef = iterator.next();
             ApiFuture<DocumentSnapshot> future = documentRef.get();
             DocumentSnapshot document = future.get();
@@ -144,7 +144,7 @@ public class GeneralService {
         return objectList;
     }
 
-    public <T> List<T> firestoreGetAll (Class<T> c, String collection, String prefix) throws ExecutionException, InterruptedException {
+    public <T> List<T> firestoreGetAll(Class<T> c, String collection, String prefix) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         Iterable<DocumentReference> documentReference = dbFirestore.collection(collection).listDocuments();
         Iterator<DocumentReference> iterator = documentReference.iterator();
@@ -218,7 +218,7 @@ public class GeneralService {
         }
     }
 
-    public Donor firestoreGetByEmail (String email, String collection) throws ExecutionException, InterruptedException {
+    public Donor firestoreGetByEmail(String email, String collection) throws ExecutionException, InterruptedException {
         Firestore firestore = FirestoreClient.getFirestore();
         Query query = firestore.collection(collection)
                 .whereEqualTo("email", email)
@@ -267,14 +267,14 @@ public class GeneralService {
         return "success";
     }
 
-    public boolean findToken (String collection, String token) {
+    public boolean findToken(String collection, String token) {
         Firestore firestore = FirestoreClient.getFirestore();
         CollectionReference collectionRef = firestore.collection(collection);
 
         try {
             Query query = collectionRef.whereEqualTo("verifiedToken", token)
-                                        .whereEqualTo("isVerified", false)
-                                        .limit(1);
+                    .whereEqualTo("isVerified", false)
+                    .limit(1);
             QuerySnapshot querySnapshot = query.get().get();
             if (!querySnapshot.isEmpty()) {
                 return true;
@@ -285,7 +285,7 @@ public class GeneralService {
         return false; // No matching token found
     }
 
-    public PasswordResetToken findPasswordToken (String collection, String token) {
+    public PasswordResetToken findPasswordToken(String collection, String token) {
         Firestore firestore = FirestoreClient.getFirestore();
         CollectionReference collectionRef = firestore.collection(collection);
 
@@ -353,7 +353,7 @@ public class GeneralService {
     }
 //    ----------------------------------------------------------------------------------------------------
 
-    public DonationHistory getHistoryById (String recId, String collection) throws ExecutionException, InterruptedException {
+    public DonationHistory getHistoryById(String recId, String collection) throws ExecutionException, InterruptedException {
         Firestore firestore = FirestoreClient.getFirestore();
         Query query = firestore.collection(collection)
                 .whereEqualTo("recordId", recId)
@@ -371,6 +371,29 @@ public class GeneralService {
             DonationHistory donationHistory = snapshot.getDocuments().get(0).toObject(DonationHistory.class);
             donationHistory.setDocumentId(id);
             return donationHistory;
+        }
+    }
+
+    //    ---------------------------------------------Update Password Only-----------------------------------------
+    public String firestoreUpdatePassword(String userId, String newPassword, String collection) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        CollectionReference collectionRef = dbFirestore.collection(collection);
+
+        Query query = collectionRef.whereEqualTo("userId", userId);
+        ApiFuture<QuerySnapshot> querySnapshotFuture = query.get();
+
+        QuerySnapshot querySnapshot = querySnapshotFuture.get();
+        if (!querySnapshot.isEmpty()) {
+            // Retrieve the first matching document
+            DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(0);
+
+            // Update only the password field
+            documentSnapshot.getReference().update("password", newPassword);
+
+            return "success";
+        } else {
+            // Document with matching userId does not exist
+            return null;
         }
     }
 }
