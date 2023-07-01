@@ -38,7 +38,7 @@ public class StaffService extends GeneralService {
     }
 
     public List<Staff> getAllStaff() throws ExecutionException, InterruptedException {
-        return firestoreGetAll(Staff.class, COLLECTION_NAME, "ST");
+        return firestoreGetAll(Staff.class, COLLECTION_NAME);
     }
 
     public String getUserIdByUsername(String username) throws ExecutionException, InterruptedException {

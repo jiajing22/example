@@ -144,25 +144,6 @@ public class GeneralService {
         return objectList;
     }
 
-    public <T> List<T> firestoreGetAll(Class<T> c, String collection, String prefix) throws ExecutionException, InterruptedException {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        Iterable<DocumentReference> documentReference = dbFirestore.collection(collection).listDocuments();
-        Iterator<DocumentReference> iterator = documentReference.iterator();
-
-        Query query = dbFirestore.collection(collection).whereGreaterThanOrEqualTo(FieldPath.documentId(), prefix)
-                .whereLessThan(FieldPath.documentId(), prefix + Character.MAX_VALUE);
-
-        ApiFuture<QuerySnapshot> querySnapshot = query.get();
-        List<T> objectList = new ArrayList<>();
-        T object = null;
-
-        for (QueryDocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            object = document.toObject(c);
-            objectList.add(object);
-        }
-        return objectList;
-    }
-
     public String firestoreGetLastID(String collection) throws ExecutionException, InterruptedException {
         Firestore firestore = FirestoreClient.getFirestore();
         CollectionReference collectionRef = firestore.collection(collection);

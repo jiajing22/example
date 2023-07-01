@@ -7,11 +7,10 @@ import com.example.demo.entity.User;
 import com.example.demo.service.DonorService;
 import com.example.demo.service.StaffService;
 import com.example.demo.service.UserService;
-import com.google.cloud.Timestamp;
+import com.example.demo.util.UtilException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
@@ -133,6 +132,15 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PutMapping("/donor-update")
+    public ResponseEntity<String> adminUpdateDonor(@RequestBody Donor donor) throws ExecutionException, InterruptedException, UtilException {
+        String updateDonor = donorService.adminUpdateDonor(donor);
+        if(updateDonor == null){
+            return null;
+        }
+        return new ResponseEntity<>("success",HttpStatus.OK);
+    }
+
     @DeleteMapping("/donor/{documentId}")
     public String deleteDonor(@PathVariable String documentId) throws ExecutionException, InterruptedException {
         return donorService.deleteDonor(documentId);
@@ -158,7 +166,7 @@ public class UserController {
         if (token == null ){
             return new ResponseEntity<>("not found",HttpStatus.OK);
         }
-        String resetUrl = "http://localhost:8080/eDonor/reset-password?token=" + token;
+        String resetUrl = "https://backendproduction.up.railway.app/eDonor/reset-password?token=" + token;
         sendEmail(user.getEmail(), resetUrl);
         return ResponseEntity.ok("success");
     }

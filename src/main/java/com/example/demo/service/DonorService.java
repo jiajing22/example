@@ -82,7 +82,7 @@ public class DonorService extends GeneralService {
             }
         });
 
-        String verificationLink = "http://localhost:8080/eDonor/verify?token=" + token;
+        String verificationLink = "https://backendproduction.up.railway.app/eDonor/verify?token=" + token;
         String content = "<p>Hello,</p>"
                 + "<p>Please click on the link below to verify your email:</p>"
                 + "<p><a href=\"" + verificationLink + "\">Activate now</a></p>"
@@ -107,6 +107,29 @@ public class DonorService extends GeneralService {
         Donor donorInfo = getDonor(donor.getDonorId());
         if (donorInfo !=null ){
             donorInfo.setAddress(donor.getAddress());
+            return firestoreUpdate(donorInfo, COLLECTION_NAME);
+        } else{
+            return null;
+        }
+    }
+
+    public String adminUpdateDonor (Donor donor) throws ExecutionException, InterruptedException, UtilException {
+        //1. Search current userId
+        Donor donorInfo = getDonor(donor.getDonorId());
+        if (donorInfo !=null ){
+            donorInfo.setAddress(donor.getAddress());
+            donorInfo.setBloodType(donor.getBloodType());
+            donorInfo.setDonorType(donor.getDonorType());
+            donorInfo.setEmail(donor.getEmail());
+            donorInfo.setFullName(donor.getFullName());
+            donorInfo.setGender(donor.getGender());
+            donorInfo.setPhone(donor.getPhone());
+            donorInfo.setUserId(donor.getUserId());
+            if ( !(donorInfo.getPassword().equals(donor.getPassword())) ){
+                donorInfo.setPassword(SHA256.hash(donor.getPassword()));
+            } else {
+                donorInfo.setPassword(donor.getPassword());
+            }
             return firestoreUpdate(donorInfo, COLLECTION_NAME);
         } else{
             return null;
