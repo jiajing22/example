@@ -377,4 +377,27 @@ public class GeneralService {
             return null;
         }
     }
+
+    //-------------------------------------update donor type only---------------------------------------------
+    public String firestoreUpdateDonorType(String donorId, String type, String collection) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        CollectionReference collectionRef = dbFirestore.collection(collection);
+
+        Query query = collectionRef.whereEqualTo("donorId", donorId);
+        ApiFuture<QuerySnapshot> querySnapshotFuture = query.get();
+
+        QuerySnapshot querySnapshot = querySnapshotFuture.get();
+        if (!querySnapshot.isEmpty()) {
+            // Retrieve the first matching document
+            DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(0);
+
+            // Update only the password field
+            documentSnapshot.getReference().update("donorType", type);
+
+            return "success";
+        } else {
+            // Document with matching userId does not exist
+            return null;
+        }
+    }
 }

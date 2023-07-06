@@ -171,7 +171,9 @@ public class DonorService extends GeneralService {
     public List<DonationHistory> getHistoryRecordByIc(String donorIc) throws ExecutionException, InterruptedException {
         return firestoreGetByIc(DonationHistory.class, "donationHistory", donorIc);
     }
-
+    public String updateDonorType (Donor donor) throws ExecutionException, InterruptedException {
+        return firestoreUpdateDonorType(donor.getDonorId(), donor.getDonorType(), COLLECTION_NAME);
+    }
 
     public String updatePw (String donorId, String password) throws ExecutionException, InterruptedException, UtilException {
         Donor donorInfo = getDonor(donorId);

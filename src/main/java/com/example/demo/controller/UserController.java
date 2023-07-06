@@ -64,10 +64,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "/staff/login", method = RequestMethod.POST)
-    public ResponseEntity<?> getStaffId(@RequestBody User user)throws Exception {
+    public ResponseEntity<Staff> getStaffId(@RequestBody User user)throws Exception {
         Staff staffId = staffService.validateStaffLogin(user.getUserId(), user.getPassword());
         if (staffId == null){
-            return new ResponseEntity<>("Invalid username or password",HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(staffId, HttpStatus.OK);
     }
@@ -135,6 +135,15 @@ public class UserController {
     @PutMapping("/donor-update")
     public ResponseEntity<String> adminUpdateDonor(@RequestBody Donor donor) throws ExecutionException, InterruptedException, UtilException {
         String updateDonor = donorService.adminUpdateDonor(donor);
+        if(updateDonor == null){
+            return null;
+        }
+        return new ResponseEntity<>("success",HttpStatus.OK);
+    }
+
+    @PutMapping("/donor-update-type")
+    public ResponseEntity<String> updateDonorType(@RequestBody Donor donor) throws ExecutionException, InterruptedException, UtilException {
+        String updateDonor = donorService.updateDonorType(donor);
         if(updateDonor == null){
             return null;
         }
