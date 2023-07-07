@@ -1,9 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Donor;
-import com.example.demo.entity.PasswordResetToken;
-import com.example.demo.entity.Staff;
-import com.example.demo.entity.User;
+import com.example.demo.entity.*;
 import com.example.demo.service.DonorService;
 import com.example.demo.service.StaffService;
 import com.example.demo.service.UserService;
@@ -38,9 +35,10 @@ public class UserController {
     private StaffService staffService;
 
     @PostMapping("/staff")
-    public String addStaff(@RequestBody Staff staff) throws ExecutionException, InterruptedException {
+    public String addStaff(@RequestBody Staff staff) throws ExecutionException, InterruptedException, UtilException {
         return staffService.addStaff(staff);
     }
+
     @GetMapping("/staff/{documentId}")
     public ResponseEntity<Staff> getStaff(@PathVariable String documentId) throws ExecutionException, InterruptedException {
         Staff staff = staffService.getStaff(documentId);
@@ -72,15 +70,6 @@ public class UserController {
         return new ResponseEntity<>(staffId, HttpStatus.OK);
     }
 
-//    @GetMapping("/staff/search-donor")
-//    public ResponseEntity<List<Donor>> searchDonorById(@RequestParam(value="id") String id) throws Exception {
-//        List<Donor> donors = donorService.findDonorById(id);
-//        if (donors == null || donors.isEmpty()) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//        return new ResponseEntity<>(donors, HttpStatus.OK);
-//    }
-
     @GetMapping("/staff/search-donor")
     public ResponseEntity<?> searchDonorById (@RequestParam(value="id") String id) throws Exception{
         Donor donor = donorService.findDonorById(id);
@@ -88,6 +77,20 @@ public class UserController {
             return new ResponseEntity<>("Donor not found", HttpStatus.OK);
         }
         return new ResponseEntity<>(donor, HttpStatus.OK);
+    }
+
+    @PostMapping("/staff-update")
+    public ResponseEntity<String> adminUpdateStaff(@RequestBody Staff staff) throws ExecutionException, InterruptedException, UtilException {
+        String updateStaff = staffService.adminUpdateStaff(staff);
+        if(updateStaff == null){
+            return null;
+        }
+        return new ResponseEntity<>("success",HttpStatus.OK);
+    }
+
+    @PostMapping("/staff-update-credential")
+    public String updateStaffPw(@RequestBody Staff staff) throws ExecutionException, InterruptedException, UtilException {
+        return staffService.updateStaffPassword(staff);
     }
 
 //    --------------------------------------Donor----------------------------------------------------------------
